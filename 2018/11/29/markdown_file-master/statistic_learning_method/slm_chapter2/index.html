@@ -80,18 +80,18 @@
 
 
 
-<meta name="description" content="1 感知机1.1 感知机模型 定义：$$\begin{align}  f(x) &amp;amp;= \text{sign} (wx+b) \  \text{sign}(x) &amp;amp;= \begin{cases} +1, x \leq 0 \ -1, x&amp;lt;0 \end{cases}\end{align}$$ 属性：   线性分类模型， 判别模型 假设空间： 所有线性分类模型   损失函数（经验风">
+<meta name="description" content="1 感知机 1.1 感知机模型  定义： \[ \begin{align}   f(x) &amp;amp;= \text{sign} (wx+b) \\   \text{sign}(x) &amp;amp;= \begin{cases} +1, x \leq 0 \\ -1, x&amp;lt;0 \end{cases} \end{align}  \] 属性：  线性分类模型， 判别模型 假设空">
 <meta name="keywords" content="感知器,线性分类， 对偶问题">
 <meta property="og:type" content="article">
 <meta property="og:title" content="感知器学习算法">
 <meta property="og:url" content="http://yoursite.com/2018/11/29/markdown_file-master/statistic_learning_method/slm_chapter2/index.html">
 <meta property="og:site_name" content="A bashful dog never fattens.">
-<meta property="og:description" content="1 感知机1.1 感知机模型 定义：$$\begin{align}  f(x) &amp;amp;= \text{sign} (wx+b) \  \text{sign}(x) &amp;amp;= \begin{cases} +1, x \leq 0 \ -1, x&amp;lt;0 \end{cases}\end{align}$$ 属性：   线性分类模型， 判别模型 假设空间： 所有线性分类模型   损失函数（经验风">
+<meta property="og:description" content="1 感知机 1.1 感知机模型  定义： \[ \begin{align}   f(x) &amp;amp;= \text{sign} (wx+b) \\   \text{sign}(x) &amp;amp;= \begin{cases} +1, x \leq 0 \\ -1, x&amp;lt;0 \end{cases} \end{align}  \] 属性：  线性分类模型， 判别模型 假设空">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-02T05:06:06.000Z">
+<meta property="og:updated_time" content="2018-12-02T08:11:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="感知器学习算法">
-<meta name="twitter:description" content="1 感知机1.1 感知机模型 定义：$$\begin{align}  f(x) &amp;amp;= \text{sign} (wx+b) \  \text{sign}(x) &amp;amp;= \begin{cases} +1, x \leq 0 \ -1, x&amp;lt;0 \end{cases}\end{align}$$ 属性：   线性分类模型， 判别模型 假设空间： 所有线性分类模型   损失函数（经验风">
+<meta name="twitter:description" content="1 感知机 1.1 感知机模型  定义： \[ \begin{align}   f(x) &amp;amp;= \text{sign} (wx+b) \\   \text{sign}(x) &amp;amp;= \begin{cases} +1, x \leq 0 \\ -1, x&amp;lt;0 \end{cases} \end{align}  \] 属性：  线性分类模型， 判别模型 假设空">
 
 
 
@@ -389,53 +389,80 @@
       
 
       
-        <h1 id="1-感知机"><a href="#1-感知机" class="headerlink" title="1 感知机"></a>1 感知机</h1><h2 id="1-1-感知机模型"><a href="#1-1-感知机模型" class="headerlink" title="1.1 感知机模型"></a>1.1 感知机模型</h2><ul>
-<li>定义：<br>$$<br>\begin{align}<br>  f(x) &amp;= \text{sign} (wx+b) \<br>  \text{sign}(x) &amp;= \begin{cases} +1, x \leq 0 \ -1, x&lt;0 \end{cases}<br>\end{align}<br>$$</li>
-<li><p>属性： </p>
+        <h1 id="感知机">1 感知机</h1>
+<h2 id="感知机模型">1.1 感知机模型</h2>
+<ul>
+<li>定义： <span class="math display">\[
+\begin{align}
+  f(x) &amp;= \text{sign} (wx+b) \\
+  \text{sign}(x) &amp;= \begin{cases} +1, x \leq 0 \\ -1, x&lt;0 \end{cases}
+\end{align} 
+\]</span></li>
+<li>属性：
 <ul>
 <li>线性分类模型， 判别模型</li>
 <li>假设空间： 所有线性分类模型</li>
+</ul></li>
+<li>损失函数（经验风险损失）： <span class="math display">\[L(w,b) = -\sum\limits_{x_i \in M} y_i (wx_i +b)\]</span><br>
+其中 <span class="math inline">\(M\)</span> 是误分类点的集合。 因为对于 <span class="math inline">\((wx_i +b) &gt;0\)</span> 的情况其预测标签为1， 对于误分类的情况实际标签为<span class="math inline">\(-1\)</span>。 因此，需要使得 <span class="math inline">\((wx_i +b)​\)</span> 往0处靠近。 所以可以采用这个作为损失函数。</li>
 </ul>
-</li>
-<li><p>损失函数（经验风险损失）：<br>$$L(w,b) = -\sum\limits_{x_i \in M} y_i (wx_i +b)$$<br>其中 $M$ 是误分类点的集合。 因为对于 $(wx_i +b) &gt;0$ 的情况其预测标签为1， 对于误分类的情况实际标签为$-1$。 因此，需要使得 $(wx_i +b)​$ 往0处靠近。 所以可以采用这个作为损失函数。 </p>
-</li>
-</ul>
-<h2 id="1-2-感知器学习算法"><a href="#1-2-感知器学习算法" class="headerlink" title="1.2 感知器学习算法"></a>1.2 感知器学习算法</h2><ul>
-<li><p>方法： 随机梯度下降算法(stochastic gradient descent)</p>
-</li>
-<li><p>梯度：<br>$$<br>\begin{align}</p>
-<pre><code>\Delta_w L(w,b) &amp;= -\sum_{x_i \in M} y_i x_i \\
-\Delta_b L(w,b) &amp;= -\sum_{x_i \in M} y_i
-</code></pre><p>\end{align}<br>$$</p>
-</li>
-<li><p>梯度的更新<br>随机的选择一个误分点进行更新：<br>$$<br>\begin{align}</p>
-<pre><code>w &amp;= w+\eta y_i x_i \\
-b &amp;= b+\eta y_i 
-</code></pre><p>\end{align}<br>$$<br>$0&lt;\eta\leq1$ 在统计学习中又称为学习率.</p>
-</li>
+<h2 id="感知器学习算法">1.2 感知器学习算法</h2>
+<ul>
+<li><p>方法： 随机梯度下降算法(stochastic gradient descent)</p></li>
+<li><p>梯度： <span class="math display">\[
+\begin{align}
+  \Delta_w L(w,b) &amp;= -\sum_{x_i \in M} y_i x_i \\
+  \Delta_b L(w,b) &amp;= -\sum_{x_i \in M} y_i
+\end{align}
+\]</span></p></li>
+<li><p>梯度的更新 随机的选择一个误分点进行更新： <span class="math display">\[
+\begin{align}
+  w &amp;= w+\eta y_i x_i \\
+  b &amp;= b+\eta y_i 
+\end{align}
+\]</span> <span class="math inline">\(0&lt;\eta\leq1\)</span> 在统计学习中又称为学习率.</p></li>
 <li><p>例子1</p>
-<p>如图2.2所示的训练数据集， 其正实例点是$x_1＝(3,3)^T， x_2＝(4,3)^T​$， 负实例点是$x_3＝(1,1)^T​$， 试用感知机学习算法的原始形式求感知机模型$f(x)＝\text{sign}(w·x+b)​$。 这里， $w＝(w^{(1)},w^{(2)})T， x＝(x^{(1)},x^{(2)})$</p>
+<p>如图2.2所示的训练数据集， 其正实例点是<span class="math inline">\(x_1＝(3,3)^T， x_2＝(4,3)^T​\)</span>， 负实例点是<span class="math inline">\(x_3＝(1,1)^T​\)</span>， 试用感知机学习算法的原始形式求感知机模型<span class="math inline">\(f(x)＝\text{sign}(w·x+b)​\)</span>。 这里， <span class="math inline">\(w＝(w^{(1)},w^{(2)})T， x＝(x^{(1)},x^{(2)})\)</span></p>
 <ul>
 <li>代码：</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">x = np.matrix([[<span class="number">3</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">3</span>], [<span class="number">1</span>, <span class="number">1</span>]])</span><br><span class="line">y = [<span class="number">1</span>, <span class="number">1</span>, <span class="number">-1</span>]</span><br><span class="line">w = np.matrix([[<span class="number">0</span>], [<span class="number">0</span>]])</span><br><span class="line">b = <span class="number">0</span></span><br><span class="line">lr = <span class="number">1</span></span><br><span class="line">flag  = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> flag&lt;<span class="number">3</span>:</span><br><span class="line">    flag = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(data)):</span><br><span class="line">        tmp = (data[i]*w + b) * y[i]</span><br><span class="line">        <span class="keyword">if</span> (tmp[<span class="number">0</span>, <span class="number">0</span>] &lt;= <span class="number">0</span>): <span class="comment"># 被误分</span></span><br><span class="line">            w = w + lr*y[i]*x[i].T</span><br><span class="line">            b = b + lr*y[i]</span><br><span class="line">            print(w.T, b)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            flag += <span class="number">1</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li><p>结果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[[3 3]]</span><br><span class="line">[[3 3]] 1</span><br><span class="line">[[2 2]] 0</span><br><span class="line">[[1 1]] -1</span><br><span class="line">[[0 0]] -2</span><br><span class="line">[[3 3]] -1</span><br><span class="line">[[2 2]] -2</span><br><span class="line">[[1 1]] -3</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[[3 3]]</span><br><span class="line">[[3 3]] 1</span><br><span class="line">[[2 2]] 0</span><br><span class="line">[[1 1]] -1</span><br><span class="line">[[0 0]] -2</span><br><span class="line">[[3 3]] -1</span><br><span class="line">[[2 2]] -2</span><br><span class="line">[[1 1]] -3</span><br></pre></td></tr></table></figure></li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<h2 id="1-3-算法的收敛性"><a href="#1-3-算法的收敛性" class="headerlink" title="1.3 算法的收敛性"></a>1.3 算法的收敛性</h2><h2 id="1-4-感知器学习算法的对偶形式"><a href="#1-4-感知器学习算法的对偶形式" class="headerlink" title="1.4 感知器学习算法的对偶形式"></a>1.4 感知器学习算法的对偶形式</h2><h3 id="1-4-1-说明："><a href="#1-4-1-说明：" class="headerlink" title="1.4.1 说明："></a>1.4.1 说明：</h3><p>感知器采用随机梯度下降的方法进行梯度下降的迭代过程如下：<br>$$<br>\begin{align}<br>    w &amp;= w + \eta y_i x_i \<br>    b &amp;= b + \eta y_i<br>\end{align}<br>$$<br>在经过$n$ 次的迭代之后，$w$ 和 $b$ 受到第$i$个样本$(x_i ,y_i)$的影响所改变值分别是 $n_i \eta y_i x_i $ 和 $n_i \eta y_i$。$n_i$表示第 $i$个样本出现错判的次数。 $\eta$ 是学习率。 用$\alpha_i$ 表示$n_i \eta$ 因此，不难得到最后的$w$ 和 $b$ 分别是：<br>$$<br>\begin{align}<br>    w &amp;= \sum\limits_{i=1}^N \alpha_i y_ix_i \<br>    b &amp;= \sum\limits_{i=1}^N \alpha_i y_i<br>\end{align}<br>$$<br>$n_i$ 又称为第$i$个实例点更新的次数，实例点更新次数越多说明该点越接近超平面，也就越难正确分类。</p>
-<h3 id="1-4-2-算法"><a href="#1-4-2-算法" class="headerlink" title="1.4.2 算法"></a>1.4.2 算法</h3><p><strong>输入</strong>: 训练数据集$T = {(x_1， y_1),(x_2,y_2),…,(x_N,y_N)}$， 其中$x_i\in \mathcal{X}=R_n, y_i\in \mathcal{Y}={-1,+1}, $$ i=1,2,…,N$; 学习率 $\eta$ $(0&lt;\eta \leq1)$。<br><strong>输出</strong>: $\alpha,b$；感知机模型$f(x)＝\text{sign}\left( \sum\limits_{j=1}^N \alpha_j y_j x_j \cdot x+b \right)$。 其中 $\alpha = (\alpha_1, \alpha_2, …, \alpha_N)^T$<br>(1) $\alpha = 0, b = 0$<br>(2) 在训练集中选取数据$(x_i, y_i)$<br>(3) 如果 $y_i \left( \sum\limits_{j=1}^N \alpha_j y_j x_j \cdot x+b \right) \leq 0$:<br>$$<br>\begin{align}<br>\alpha_i &amp;= \alpha_i +\eta\<br>b &amp;= b + \eta y_i<br>\end{align}<br>$$<br>(4) 转至（2）直到没有误分类数据。<br>对偶形式中训练实例仅以内积的形式出现。 为了方便， 可以预先将训练集中实例间的内积计算出来并以矩阵的形式存储， 这个矩阵就是所谓的Gram矩阵（Gram matrix）<br>$$<br>G = [x_i \cdot x_j]_{N \times N}<br>$$</p>
-<h3 id="1-4-3-例子"><a href="#1-4-3-例子" class="headerlink" title="1.4.3 例子"></a>1.4.3 例子</h3><p>数据同例1， 正样本点是$x_1＝(3,3)^T， x_2＝(4,3)^T$， 负样本点是$x_3＝(1,1)^T$， 试用感知机学习算法对偶形式求感知机模型.</p>
+<h2 id="算法的收敛性">1.3 算法的收敛性</h2>
+<h2 id="感知器学习算法的对偶形式">1.4 感知器学习算法的对偶形式</h2>
+<h3 id="说明">1.4.1 说明：</h3>
+<p>感知器采用随机梯度下降的方法进行梯度下降的迭代过程如下： <span class="math display">\[
+\begin{align}
+    w &amp;= w + \eta y_i x_i \\
+    b &amp;= b + \eta y_i 
+\end{align}
+\]</span> 在经过<span class="math inline">\(n\)</span> 次的迭代之后，<span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span> 受到第<span class="math inline">\(i\)</span>个样本<span class="math inline">\((x_i ,y_i)\)</span>的影响所改变值分别是 $n_i y_i x_i $ 和 <span class="math inline">\(n_i \eta y_i\)</span>。<span class="math inline">\(n_i\)</span>表示第 <span class="math inline">\(i\)</span>个样本出现错判的次数。 <span class="math inline">\(\eta\)</span> 是学习率。 用<span class="math inline">\(\alpha_i\)</span> 表示<span class="math inline">\(n_i \eta\)</span> 因此，不难得到最后的<span class="math inline">\(w\)</span> 和 <span class="math inline">\(b\)</span> 分别是： <span class="math display">\[
+\begin{align}
+    w &amp;= \sum\limits_{i=1}^N \alpha_i y_ix_i \\
+    b &amp;= \sum\limits_{i=1}^N \alpha_i y_i 
+\end{align}
+\]</span> <span class="math inline">\(n_i\)</span> 又称为第<span class="math inline">\(i\)</span>个实例点更新的次数，实例点更新次数越多说明该点越接近超平面，也就越难正确分类。</p>
+<h3 id="算法">1.4.2 算法</h3>
+<p><strong>输入</strong>: 训练数据集<span class="math inline">\(T = \{(x_1， y_1),(x_2,y_2),...,(x_N,y_N)\}\)</span>， 其中$x_i=R_n, y_i={-1,+1}, <span class="math display">\[ i=1,2,...,N$; 学习率 $\eta$ $(0&lt;\eta \leq1)$。
+**输出**: $\alpha,b$；感知机模型$f(x)＝\text{sign}\left( \sum\limits_{j=1}^N \alpha_j y_j x_j \cdot x+b \right)$。 其中 $\alpha = (\alpha_1, \alpha_2, ..., \alpha_N)^T$
+(1) $\alpha = 0, b = 0$
+(2) 在训练集中选取数据$(x_i, y_i)$
+(3) 如果 $y_i \left( \sum\limits_{j=1}^N \alpha_j y_j x_j \cdot x+b \right) \leq 0$:
+\]</span> <span class="math display">\[\begin{align}
+\alpha_i &amp;= \alpha_i +\eta\\
+b &amp;= b + \eta y_i  
+\end{align}\]</span> <span class="math display">\[
+(4) 转至（2）直到没有误分类数据。
+对偶形式中训练实例仅以内积的形式出现。 为了方便， 可以预先将训练集中实例间的内积计算出来并以矩阵的形式存储， 这个矩阵就是所谓的Gram矩阵（Gram matrix）
+\]</span> G = [x_i x_j]_{N N} $$</p>
+<h3 id="例子">1.4.3 例子</h3>
+<p>数据同例1， 正样本点是<span class="math inline">\(x_1＝(3,3)^T， x_2＝(4,3)^T\)</span>， 负样本点是<span class="math inline">\(x_3＝(1,1)^T\)</span>， 试用感知机学习算法对偶形式求感知机模型. - 代码 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 变量初始化</span></span><br><span class="line">x = np.matrix([[<span class="number">3</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">3</span>], [<span class="number">1</span>, <span class="number">1</span>]])</span><br><span class="line">y = np.matrix([[<span class="number">1</span>], [<span class="number">1</span>], [<span class="number">-1</span>]])</span><br><span class="line">alpha = np.matrix([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">b = <span class="number">0</span></span><br><span class="line">lr = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算Gamma 矩阵</span></span><br><span class="line">G = np.matmul(x, x.T)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 迭代更新 alpha 和 b</span></span><br><span class="line">num = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> num&lt;<span class="number">3</span>:</span><br><span class="line">    num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(x)):</span><br><span class="line">        tmp = np.sum(np.multiply(np.multiply(alpha, y.T), G[i] ))</span><br><span class="line">        tmp += b</span><br><span class="line">        tmp *= y[i, <span class="number">0</span>]</span><br><span class="line">        <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">            alpha[<span class="number">0</span>, i] += lr</span><br><span class="line">            b += y[i]*lr</span><br><span class="line">            print(alpha, b)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            num += <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">w = np.multiply(np.multiply(alpha.T, y), x)</span><br><span class="line">w = np.sum(w, <span class="number">0</span>)</span><br><span class="line">print(<span class="string">"w:"</span>, w, <span class="string">" b:"</span>, b)</span><br></pre></td></tr></table></figure></p>
 <ul>
-<li><p>代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 变量初始化</span></span><br><span class="line">x = np.matrix([[<span class="number">3</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">3</span>], [<span class="number">1</span>, <span class="number">1</span>]])</span><br><span class="line">y = np.matrix([[<span class="number">1</span>], [<span class="number">1</span>], [<span class="number">-1</span>]])</span><br><span class="line">alpha = np.matrix([<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>])</span><br><span class="line">b = <span class="number">0</span></span><br><span class="line">lr = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算Gamma 矩阵</span></span><br><span class="line">G = np.matmul(x, x.T)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 迭代更新 alpha 和 b</span></span><br><span class="line">num = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> num&lt;<span class="number">3</span>:</span><br><span class="line">    num = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(x)):</span><br><span class="line">        tmp = np.sum(np.multiply(np.multiply(alpha, y.T), G[i] ))</span><br><span class="line">        tmp += b</span><br><span class="line">        tmp *= y[i, <span class="number">0</span>]</span><br><span class="line">        <span class="keyword">if</span> tmp &lt;= <span class="number">0</span>:</span><br><span class="line">            alpha[<span class="number">0</span>, i] += lr</span><br><span class="line">            b += y[i]*lr</span><br><span class="line">            print(alpha, b)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            num += <span class="number">1</span></span><br><span class="line">            </span><br><span class="line">w = np.multiply(np.multiply(alpha.T, y), x)</span><br><span class="line">w = np.sum(w, <span class="number">0</span>)</span><br><span class="line">print(<span class="string">"w:"</span>, w, <span class="string">" b:"</span>, b)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>结果</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[[1 0 0]] [[1]]</span><br><span class="line">[[1 0 1]] [[0]]</span><br><span class="line">[[1 0 2]] [[-1]]</span><br><span class="line">[[1 0 3]] [[-2]]</span><br><span class="line">[[2 0 3]] [[-1]]</span><br><span class="line">[[2 0 4]] [[-2]]</span><br><span class="line">[[2 0 5]] [[-3]]</span><br><span class="line">w: [[1 1]]  b: [[-3]]</span><br></pre></td></tr></table></figure>
-</li>
+<li>结果 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[[1 0 0]] [[1]]</span><br><span class="line">[[1 0 1]] [[0]]</span><br><span class="line">[[1 0 2]] [[-1]]</span><br><span class="line">[[1 0 3]] [[-2]]</span><br><span class="line">[[2 0 3]] [[-1]]</span><br><span class="line">[[2 0 4]] [[-2]]</span><br><span class="line">[[2 0 5]] [[-3]]</span><br><span class="line">w: [[1 1]]  b: [[-3]]</span><br></pre></td></tr></table></figure></li>
 </ul>
 
       
@@ -630,7 +657,7 @@ b &amp;= b+\eta y_i
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-感知机"><span class="nav-number">1.</span> <span class="nav-text">1 感知机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-感知机模型"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 感知机模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-感知器学习算法"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 感知器学习算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-算法的收敛性"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 算法的收敛性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-感知器学习算法的对偶形式"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 感知器学习算法的对偶形式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-1-说明："><span class="nav-number">1.4.1.</span> <span class="nav-text">1.4.1 说明：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-2-算法"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.4.2 算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-3-例子"><span class="nav-number">1.4.3.</span> <span class="nav-text">1.4.3 例子</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#感知机"><span class="nav-number">1.</span> <span class="nav-text">1 感知机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#感知机模型"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 感知机模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感知器学习算法"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 感知器学习算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法的收敛性"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 算法的收敛性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#感知器学习算法的对偶形式"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 感知器学习算法的对偶形式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#说明"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.4.1 说明：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.4.2 算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">1.4.3.</span> <span class="nav-text">1.4.3 例子</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

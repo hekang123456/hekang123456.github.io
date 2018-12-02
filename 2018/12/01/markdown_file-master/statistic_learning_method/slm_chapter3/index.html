@@ -80,18 +80,18 @@
 
 
 
-<meta name="description" content="1 $k$ 近邻法 $k$ 近邻法的三个基本要素： $k$值的选择， 距离度量， 分类决策规则1.1 $k$ 近邻算法输入： 训练数据集$$T = { (x_1, y_1), (x_2, y_2),…, (x_N, y_N)}$$其中， $x_i \in \mathcal{X}  \subseteq R^n$为实例的特征向量， $y_i \in  \mathcal{Y} ＝{c_1， c_2,…,">
+<meta name="description" content="1 \(k\) 近邻法  \(k\) 近邻法的三个基本要素： \(k\)值的选择， 距离度量， 分类决策规则 ## 1.1 \(k\) 近邻算法 输入： 训练数据集 \[ T = \{ (x_1, y_1), (x_2, y_2),..., (x_N, y_N)\} \] 其中， \(x_i \in \mathcal{X} \subseteq R^n\)为实例的特征向量， \(y_i \i">
 <meta name="keywords" content="$k$近邻法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="$k$ 近邻法">
-<meta property="og:url" content="http://yoursite.com/2018/12/02/markdown_file-master/statistic_learning_method/slm_chapter3/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/12/01/markdown_file-master/statistic_learning_method/slm_chapter3/index.html">
 <meta property="og:site_name" content="A bashful dog never fattens.">
-<meta property="og:description" content="1 $k$ 近邻法 $k$ 近邻法的三个基本要素： $k$值的选择， 距离度量， 分类决策规则1.1 $k$ 近邻算法输入： 训练数据集$$T = { (x_1, y_1), (x_2, y_2),…, (x_N, y_N)}$$其中， $x_i \in \mathcal{X}  \subseteq R^n$为实例的特征向量， $y_i \in  \mathcal{Y} ＝{c_1， c_2,…,">
+<meta property="og:description" content="1 \(k\) 近邻法  \(k\) 近邻法的三个基本要素： \(k\)值的选择， 距离度量， 分类决策规则 ## 1.1 \(k\) 近邻算法 输入： 训练数据集 \[ T = \{ (x_1, y_1), (x_2, y_2),..., (x_N, y_N)\} \] 其中， \(x_i \in \mathcal{X} \subseteq R^n\)为实例的特征向量， \(y_i \i">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-12-02T05:06:06.000Z">
+<meta property="og:updated_time" content="2018-12-02T08:11:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="$k$ 近邻法">
-<meta name="twitter:description" content="1 $k$ 近邻法 $k$ 近邻法的三个基本要素： $k$值的选择， 距离度量， 分类决策规则1.1 $k$ 近邻算法输入： 训练数据集$$T = { (x_1, y_1), (x_2, y_2),…, (x_N, y_N)}$$其中， $x_i \in \mathcal{X}  \subseteq R^n$为实例的特征向量， $y_i \in  \mathcal{Y} ＝{c_1， c_2,…,">
+<meta name="twitter:description" content="1 \(k\) 近邻法  \(k\) 近邻法的三个基本要素： \(k\)值的选择， 距离度量， 分类决策规则 ## 1.1 \(k\) 近邻算法 输入： 训练数据集 \[ T = \{ (x_1, y_1), (x_2, y_2),..., (x_N, y_N)\} \] 其中， \(x_i \in \mathcal{X} \subseteq R^n\)为实例的特征向量， \(y_i \i">
 
 
 
@@ -121,7 +121,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/02/markdown_file-master/statistic_learning_method/slm_chapter3/">
+  <link rel="canonical" href="http://yoursite.com/2018/12/01/markdown_file-master/statistic_learning_method/slm_chapter3/">
 
 
 
@@ -289,7 +289,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/02/markdown_file-master/statistic_learning_method/slm_chapter3/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/01/markdown_file-master/statistic_learning_method/slm_chapter3/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="hk">
@@ -318,8 +318,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-02T00:00:00+08:00">
-                2018-12-02
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-01T00:00:00+08:00">
+                2018-12-01
               </time>
             
 
@@ -389,52 +389,49 @@
       
 
       
-        <h1 id="1-k-近邻法"><a href="#1-k-近邻法" class="headerlink" title="1 $k$ 近邻法"></a>1 $k$ 近邻法</h1><ul>
-<li>$k$ 近邻法的三个基本要素： $k$值的选择， 距离度量， 分类决策规则<h2 id="1-1-k-近邻算法"><a href="#1-1-k-近邻算法" class="headerlink" title="1.1 $k$ 近邻算法"></a>1.1 $k$ 近邻算法</h2><strong>输入</strong>： 训练数据集<br>$$<br>T = { (x_1, y_1), (x_2, y_2),…, (x_N, y_N)}<br>$$<br>其中， $x_i \in \mathcal{X}  \subseteq R^n$为实例的特征向量， $y_i \in  \mathcal{Y} ＝{c_1， c_2,…,c_K}$ 为实例的类别， $i＝1,2,…,N$； 实例特征向量$x$；<br><strong>输出</strong>： 实例$x$所属的类$y$.<br>(1)  根据给定的距离度量， 在训练集$T$中找出与$x$最邻近的$k$个点， 涵盖这$k$个点的$x$的邻域记作$N_k(x)$；<br>(2) 在$N_k(x)$中根据分类决策规则（如多数表决） 决定$x$的类别$y$：<br>$$<br>y = \arg \max\limits_{c_j} \sum\limits_{x_i \in N_k (x)} I(y_i = c_j), i= 1,2,..,N; j=1,2,…,K<br>$$<br>式中$I$为指示函数，即当$y_i = c_j$时$I$为1， 否则为0。</li>
-</ul>
-<p>(3) 最近邻算法：取 $k=1$ 时</p>
-<h2 id="1-2-距离度量"><a href="#1-2-距离度量" class="headerlink" title="1.2 距离度量"></a>1.2 距离度量</h2><ul>
-<li>$L_p$ 距离<br>  $$<br>  L_p (x_i, x_j) = \left( \sum\limits_{l=1}^n | x_i^{(l)} -x_j^{(l)} |^p \right)^{\frac{1}{p}}<br>  $$<br>  这里的$p\geq 1$,当$p​$取不同的值的时候会得到不同的距离。<ul>
-<li>当 $p=2$时， 称为欧式距离（Euclidean distance）</li>
-<li>当 $p=1$时， 称为曼哈顿距离（Manhattan distance）</li>
-<li>当 $p=\infty$时， 取各个坐标距离的最大值，即 $L_{\infty} (x_i, x_j) = \max\limits_l |x_i^{(l)}-x_j^{(l)}|$</li>
-</ul>
-</li>
-</ul>
-<h2 id="1-3-k-值的选择"><a href="#1-3-k-值的选择" class="headerlink" title="1.3 $k$ 值的选择"></a>1.3 $k$ 值的选择</h2><ul>
-<li>在应用中，$ k$值一般取一个比较小的数值。 通常采用交叉验证法来选取最优的$k$值.</li>
-</ul>
-<h2 id="1-4-分类决策规则"><a href="#1-4-分类决策规则" class="headerlink" title="1.4 分类决策规则"></a>1.4 分类决策规则</h2><p>$k$ 近邻法的决策规则实际上是多数表决，如果分类函数的损失函数是0-1损失函数，将损失函数表示为：<br>$$f: R^n \rightarrow { c_1, c_2, …, c_K }$$<br>那么误分类的函数概率就是：<br>$$P(Y \neq f(X)) = 1-P(Y=f(X))$$<br>对给定的实例 $x \in X$, 其最近邻的$k$ 个训练实例点构成集合$N_k (x)$ 。如果涵盖$N_k(x)$ 的类别是$c_j$, 那么误分类率是:<br>$$\frac{1}{k} \sum\limits_{x_i \in N_k(x)} I(y_i \neq c_j)= 1- \frac{1}{k} \sum\limits_{x_i \in N_k(x)}I(y_i =c_j)$$ </p>
-<font color="red">多数表决规则等价于经验风险最小化。</font>
-
-<h2 id="1-5-k-近邻法的实现：-kd树"><a href="#1-5-k-近邻法的实现：-kd树" class="headerlink" title="1.5 $k$近邻法的实现： kd树"></a>1.5 $k$近邻法的实现： kd树</h2><h3 id="1-5-1-构造平衡kd树"><a href="#1-5-1-构造平衡kd树" class="headerlink" title="1.5.1 构造平衡kd树"></a>1.5.1 构造平衡kd树</h3><p><strong>输入:</strong> $k$ 维空间数据集 $T = { x_1, x_2, …, x_N }$, 其中$x_i = (x_i^{(1)}, x_i^{(2)}, x_i^{(3)}, …, x_i^{(k)})^T$, $i = 1, 2, …, N$<br><strong>输出：</strong> kd树<br>(1) 开始：</p>
+        <h1 id="k-近邻法">1 <span class="math inline">\(k\)</span> 近邻法</h1>
 <ul>
-<li>构造根结点， 根结点对应于包含$T$的$k$维空间的超矩形区域。 选择$x^{(1)}$为坐标轴， 以$T$中所有实例的$x^{(1)}$坐标的中位数为切分点， 将根结点对应的超矩形区域切分为两个子区域。 切分由通过切分点并与坐标轴$x^{(1)}$垂直的超平面实现。</li>
-<li>由根结点生成深度为1的左、右子结点： 左子结点对应坐标$x^{(1)}$小于切分点的子区域， 右子结点对应于坐标$x^{(1)}$大于切分点的子区域。</li>
-<li>将落在切分超平面上的实例点保存在根结点。</li>
+<li><span class="math inline">\(k\)</span> 近邻法的三个基本要素： <span class="math inline">\(k\)</span>值的选择， 距离度量， 分类决策规则 ## 1.1 <span class="math inline">\(k\)</span> 近邻算法 <strong>输入</strong>： 训练数据集 <span class="math display">\[
+T = \{ (x_1, y_1), (x_2, y_2),..., (x_N, y_N)\}
+\]</span> 其中， <span class="math inline">\(x_i \in \mathcal{X} \subseteq R^n\)</span>为实例的特征向量， <span class="math inline">\(y_i \in \mathcal{Y} ＝\{c_1， c_2,…,c_K\}\)</span> 为实例的类别， <span class="math inline">\(i＝1,2,…,N\)</span>； 实例特征向量<span class="math inline">\(x\)</span>； <strong>输出</strong>： 实例<span class="math inline">\(x\)</span>所属的类<span class="math inline">\(y\)</span>.</li>
 </ul>
-<p>(2) 重复：</p>
+<ol type="1">
+<li>根据给定的距离度量， 在训练集<span class="math inline">\(T\)</span>中找出与<span class="math inline">\(x\)</span>最邻近的<span class="math inline">\(k\)</span>个点， 涵盖这<span class="math inline">\(k\)</span>个点的<span class="math inline">\(x\)</span>的邻域记作<span class="math inline">\(N_k(x)\)</span>；</li>
+<li><p>在<span class="math inline">\(N_k(x)\)</span>中根据分类决策规则（如多数表决） 决定<span class="math inline">\(x\)</span>的类别<span class="math inline">\(y\)</span>： <span class="math display">\[
+y = \arg \max\limits_{c_j} \sum\limits_{x_i \in N_k (x)} I(y_i = c_j), i= 1,2,..,N; j=1,2,...,K
+\]</span> 式中<span class="math inline">\(I\)</span>为指示函数，即当<span class="math inline">\(y_i = c_j\)</span>时<span class="math inline">\(I\)</span>为1， 否则为0。</p></li>
+<li><p>最近邻算法：取 <span class="math inline">\(k=1\)</span> 时</p></li>
+</ol>
+<h2 id="距离度量">1.2 距离度量</h2>
 <ul>
-<li>对深度为$j$的结点， 选择$x^{(l)}$为切分的坐标轴， $l＝j( \text{mod} k)+1$， 以该结点的区域中所有实例的$x^{(l)}$坐标的中位数为切分点， 将该结点对应的超矩形区域切分为两个子区域。 切分由通过切分点并与坐标轴$x^{(l)}$垂直的超平面实现。</li>
-<li>由该结点生成深度为$j+1$的左、 右子结点： 左子结点对应坐标$x^{(l)}$小于切分点的子区<br>域， 右子结点对应坐标$x^{(l)}$大于切分点的子区域。</li>
+<li><span class="math inline">\(L_p\)</span> 距离 <span class="math display">\[
+  L_p (x_i, x_j) = \left( \sum\limits_{l=1}^n | x_i^{(l)} -x_j^{(l)} |^p \right)^{\frac{1}{p}}
+  \]</span> 这里的<span class="math inline">\(p\geq 1\)</span>,当<span class="math inline">\(p​\)</span>取不同的值的时候会得到不同的距离。
+<ul>
+<li>当 <span class="math inline">\(p=2\)</span>时， 称为欧式距离（Euclidean distance）</li>
+<li>当 <span class="math inline">\(p=1\)</span>时， 称为曼哈顿距离（Manhattan distance）</li>
+<li>当 <span class="math inline">\(p=\infty\)</span>时， 取各个坐标距离的最大值，即 <span class="math inline">\(L_{\infty} (x_i, x_j) = \max\limits_l |x_i^{(l)}-x_j^{(l)}|\)</span></li>
+</ul></li>
+</ul>
+<h2 id="k-值的选择">1.3 <span class="math inline">\(k\)</span> 值的选择</h2>
+<ul>
+<li>在应用中，$ k<span class="math inline">\(值一般取一个比较小的数值。 通常采用交叉验证法来选取最优的\)</span>k$值.</li>
+</ul>
+<h2 id="分类决策规则">1.4 分类决策规则</h2>
+<p><span class="math inline">\(k\)</span> 近邻法的决策规则实际上是多数表决，如果分类函数的损失函数是0-1损失函数，将损失函数表示为： <span class="math display">\[f: R^n \rightarrow \{ c_1, c_2, ..., c_K \}\]</span> 那么误分类的函数概率就是： <span class="math display">\[P(Y \neq f(X)) = 1-P(Y=f(X))\]</span> 对给定的实例 <span class="math inline">\(x \in X\)</span>, 其最近邻的<span class="math inline">\(k\)</span> 个训练实例点构成集合<span class="math inline">\(N_k (x)\)</span> 。如果涵盖<span class="math inline">\(N_k(x)\)</span> 的类别是<span class="math inline">\(c_j\)</span>, 那么误分类率是: <span class="math display">\[\frac{1}{k} \sum\limits_{x_i \in N_k(x)} I(y_i \neq c_j)= 1- \frac{1}{k} \sum\limits_{x_i \in N_k(x)}I(y_i =c_j)\]</span> <font color="red">多数表决规则等价于经验风险最小化。</font></p>
+<h2 id="k近邻法的实现-kd树">1.5 <span class="math inline">\(k\)</span>近邻法的实现： kd树</h2>
+<h3 id="构造平衡kd树">1.5.1 构造平衡kd树</h3>
+<p><strong>输入:</strong> <span class="math inline">\(k\)</span> 维空间数据集 <span class="math inline">\(T = \{ x_1, x_2, ..., x_N \}\)</span>, 其中<span class="math inline">\(x_i = (x_i^{(1)}, x_i^{(2)}, x_i^{(3)}, ..., x_i^{(k)})^T\)</span>, <span class="math inline">\(i = 1, 2, ..., N\)</span> <strong>输出：</strong> kd树 (1) 开始： - 构造根结点， 根结点对应于包含<span class="math inline">\(T\)</span>的<span class="math inline">\(k\)</span>维空间的超矩形区域。 选择<span class="math inline">\(x^{(1)}\)</span>为坐标轴， 以<span class="math inline">\(T\)</span>中所有实例的<span class="math inline">\(x^{(1)}\)</span>坐标的中位数为切分点， 将根结点对应的超矩形区域切分为两个子区域。 切分由通过切分点并与坐标轴<span class="math inline">\(x^{(1)}\)</span>垂直的超平面实现。 - 由根结点生成深度为1的左、右子结点： 左子结点对应坐标<span class="math inline">\(x^{(1)}\)</span>小于切分点的子区域， 右子结点对应于坐标<span class="math inline">\(x^{(1)}\)</span>大于切分点的子区域。 - 将落在切分超平面上的实例点保存在根结点。</p>
+<ol start="2" type="1">
+<li>重复：</li>
+</ol>
+<ul>
+<li>对深度为<span class="math inline">\(j\)</span>的结点， 选择<span class="math inline">\(x^{(l)}\)</span>为切分的坐标轴， <span class="math inline">\(l＝j( \text{mod} k)+1\)</span>， 以该结点的区域中所有实例的<span class="math inline">\(x^{(l)}\)</span>坐标的中位数为切分点， 将该结点对应的超矩形区域切分为两个子区域。 切分由通过切分点并与坐标轴<span class="math inline">\(x^{(l)}\)</span>垂直的超平面实现。</li>
+<li>由该结点生成深度为<span class="math inline">\(j+1\)</span>的左、 右子结点： 左子结点对应坐标<span class="math inline">\(x^{(l)}\)</span>小于切分点的子区 域， 右子结点对应坐标<span class="math inline">\(x^{(l)}\)</span>大于切分点的子区域。</li>
 <li>直到两个子区域没有实例存在时停止。 从而形成kd树的区域划分。</li>
 </ul>
-<h3 id="1-5-2-搜索kd树"><a href="#1-5-2-搜索kd树" class="headerlink" title="1.5.2 搜索kd树"></a>1.5.2 搜索kd树</h3><p><strong>输入：</strong>  已构造的kd树； 目标点$x$；<br><strong>输出：</strong> $x$的最近邻。</p>
-<ul>
-<li>在kd树中找出包含目标点$x$的叶结点： 从根结点出发， 递归地向下访问kd树。 若目标点$x$当前维的坐标小于切分点的坐标， 则移动到左子结点， 否则移动到右子结点。 直到子结点为叶结点为止。</li>
-<li>以此叶结点为“当前最近点”。</li>
-<li>递归地向上回退， 在每个结点进行以下操作：<ul>
-<li>a. 如果该结点保存的实例点比当前最近点距离目标点更近， 则以该实例点为“当前最近点”。</li>
-<li>b.<ul>
-<li>当前最近点一定存在于该结点一个子结点对应的区域。 检查该子结点的父结点的另一子结点对应的区域是否有更近的点。 具体地， 检查另一子结点对应的区域是否与以目标点为球心、 以目标点与“当前最近点”间的距离为半径的超球体相交。</li>
-<li>如果相交， 可能在另一个子结点对应的区域内存在距目标点更近的点， 移动到另一个子结点。 接着， 递归地进行最近邻搜索</li>
-<li>如果不相交， 向上回退。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>当回退到根结点时， 搜索结束。 最后的“当前最近点”即为$x$的最近邻点。 如果实例点是随机分布的， kd树搜索的平均计算复杂度是$O(\log N)$， 这里$N$是训练实例数。 kd树更适用于训练实例数远大于空间维数时的$k$近邻搜索。 当空间维数接近训练实例数时， 它的效率会迅速下降， 几乎接近线性扫描</li>
-</ul>
+<h3 id="搜索kd树">1.5.2 搜索kd树</h3>
+<p><strong>输入：</strong> 已构造的kd树； 目标点<span class="math inline">\(x\)</span>； <strong>输出：</strong> <span class="math inline">\(x\)</span>的最近邻。 - 在kd树中找出包含目标点<span class="math inline">\(x\)</span>的叶结点： 从根结点出发， 递归地向下访问kd树。 若目标点<span class="math inline">\(x\)</span>当前维的坐标小于切分点的坐标， 则移动到左子结点， 否则移动到右子结点。 直到子结点为叶结点为止。 - 以此叶结点为“当前最近点”。 - 递归地向上回退， 在每个结点进行以下操作： - a. 如果该结点保存的实例点比当前最近点距离目标点更近， 则以该实例点为“当前最近点”。 - b. - 当前最近点一定存在于该结点一个子结点对应的区域。 检查该子结点的父结点的另一子结点对应的区域是否有更近的点。 具体地， 检查另一子结点对应的区域是否与以目标点为球心、 以目标点与“当前最近点”间的距离为半径的超球体相交。 - 如果相交， 可能在另一个子结点对应的区域内存在距目标点更近的点， 移动到另一个子结点。 接着， 递归地进行最近邻搜索 - 如果不相交， 向上回退。 - 当回退到根结点时， 搜索结束。 最后的“当前最近点”即为<span class="math inline">\(x\)</span>的最近邻点。 如果实例点是随机分布的， kd树搜索的平均计算复杂度是<span class="math inline">\(O(\log N)\)</span>， 这里<span class="math inline">\(N\)</span>是训练实例数。 kd树更适用于训练实例数远大于空间维数时的<span class="math inline">\(k\)</span>近邻搜索。 当空间维数接近训练实例数时， 它的效率会迅速下降， 几乎接近线性扫描</p>
 
       
     </div>
@@ -474,10 +471,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/02/markdown_file-master/others/在机器学习中数据不平衡问题的解决/" rel="prev" title="在机器学习中数据不平衡问题的解决">
-                在机器学习中数据不平衡问题的解决 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -626,7 +619,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-k-近邻法"><span class="nav-number">1.</span> <span class="nav-text">1 $k$ 近邻法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-k-近邻算法"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 $k$ 近邻算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-距离度量"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 距离度量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-k-值的选择"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 $k$ 值的选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-分类决策规则"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 分类决策规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-k-近邻法的实现：-kd树"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 $k$近邻法的实现： kd树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-1-构造平衡kd树"><span class="nav-number">1.5.1.</span> <span class="nav-text">1.5.1 构造平衡kd树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-2-搜索kd树"><span class="nav-number">1.5.2.</span> <span class="nav-text">1.5.2 搜索kd树</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#k-近邻法"><span class="nav-number">1.</span> <span class="nav-text">1 \(k\) 近邻法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#距离度量"><span class="nav-number">1.1.</span> <span class="nav-text">1.2 距离度量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-值的选择"><span class="nav-number">1.2.</span> <span class="nav-text">1.3 \(k\) 值的选择</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分类决策规则"><span class="nav-number">1.3.</span> <span class="nav-text">1.4 分类决策规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k近邻法的实现-kd树"><span class="nav-number">1.4.</span> <span class="nav-text">1.5 \(k\)近邻法的实现： kd树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造平衡kd树"><span class="nav-number">1.4.1.</span> <span class="nav-text">1.5.1 构造平衡kd树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#搜索kd树"><span class="nav-number">1.4.2.</span> <span class="nav-text">1.5.2 搜索kd树</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
