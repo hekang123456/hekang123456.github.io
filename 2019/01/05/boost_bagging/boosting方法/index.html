@@ -88,13 +88,13 @@
 <meta property="og:site_name" content="A bashful dog never fattens.">
 <meta property="og:description" content="提升方法  介绍  强可学习与弱可学习  强可学习 : 一个概念（类）,存在一个多项式的学习算法能够学习他，并且正确率很高，则这个概念是强可学习的。 弱可学习：一个概念（类）,存在一个多项式的学习算法能够学习他，但是学习的正确率只比随机猜测略好，那么这个概念就是弱可学习的。 强可学习和弱可学习是等价的， 一个概念是强可学习的充分必要条件是这个概念是弱可学习的。  提升方法的由来">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/process.png">
-<meta property="og:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/adaboost.png">
-<meta property="og:updated_time" content="2019-06-08T09:13:44.500Z">
+<meta property="og:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/process.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/adaboost.jpg">
+<meta property="og:updated_time" content="2019-06-08T09:40:33.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="提升方法">
 <meta name="twitter:description" content="提升方法  介绍  强可学习与弱可学习  强可学习 : 一个概念（类）,存在一个多项式的学习算法能够学习他，并且正确率很高，则这个概念是强可学习的。 弱可学习：一个概念（类）,存在一个多项式的学习算法能够学习他，但是学习的正确率只比随机猜测略好，那么这个概念就是弱可学习的。 强可学习和弱可学习是等价的， 一个概念是强可学习的充分必要条件是这个概念是弱可学习的。  提升方法的由来">
-<meta name="twitter:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/process.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/process.jpg">
 
 
 
@@ -382,7 +382,7 @@
 
       
         <h1 id="提升方法">提升方法</h1>
-<p><img src="/2019/01/05/boost_bagging/boosting方法/boosting/process.png"></p>
+<p><img src="/2019/01/05/boost_bagging/boosting方法/boosting/process.jpg"></p>
 <h4 id="介绍">介绍</h4>
 <ul>
 <li>强可学习与弱可学习
@@ -432,7 +432,7 @@ f(x) = f_M (x) = \sum\limits_{m=1}^M \beta_m b(x; \gamma_m)
 <p>​ AdaBoost 通过在每次训练过程中根据当前分类器对数据分类是否正确，调整训练数据的权重值。 通过当前分类器在训练数据集上的分类精度判断当前分类器的权重，最后将所有分类器进行加权求和得到最终的分类器。</p>
 <ul>
 <li><p>AdaBoost 的计算流程</p>
-<p><img src="/2019/01/05/boost_bagging/boosting方法/boosting/adaboost.png"></p>
+<p><img src="/2019/01/05/boost_bagging/boosting方法/boosting/adaboost.jpg"></p>
 <ul>
 <li><p>初始数据权值： <span class="math inline">\(w_{1i} = \frac{1}{N}, i=1,2,...,N\)</span></p></li>
 <li><p>加权误差： <span class="math inline">\(e_m = \sum\limits_{i=1}^N P(G_m(x_i) \neq y_i) = \sum\limits_{i=1}^N w_{m_i} I( G_m(x_i) \neq y_i)\)</span> 其中 <span class="math inline">\(G_m (x)\)</span> 表示基本分类器，结果为-1或1。</p></li>
