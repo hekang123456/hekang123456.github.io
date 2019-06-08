@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="第四章: 降维 4.1 PCA 最大方差理论  如何定义主成分？ 利用空间变换， 利用较低维度数据最大程度的表征原始数据，从而达到降维的目的。 如何设计目标函数进行主成分的提取？ 给定一堆数据点 \((x_1, x_2, ..., x_n)\) 我们将其通过线性变换可得 $w^Tx_ i $ （此处向量均为列向量） 这个变换可以理解为是 \(x_i\) 投影在 \(w\) 向量方向得到的向">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A bashful dog never fattens.">
+<meta property="og:url" content="http://yoursite.com/2019/06/08/百面机器学习/index.html">
+<meta property="og:site_name" content="A bashful dog never fattens.">
+<meta property="og:description" content="第四章: 降维 4.1 PCA 最大方差理论  如何定义主成分？ 利用空间变换， 利用较低维度数据最大程度的表征原始数据，从而达到降维的目的。 如何设计目标函数进行主成分的提取？ 给定一堆数据点 \((x_1, x_2, ..., x_n)\) 我们将其通过线性变换可得 $w^Tx_ i $ （此处向量均为列向量） 这个变换可以理解为是 \(x_i\) 投影在 \(w\) 向量方向得到的向">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-06-08T09:13:44.563Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="A bashful dog never fattens.">
+<meta name="twitter:description" content="第四章: 降维 4.1 PCA 最大方差理论  如何定义主成分？ 利用空间变换， 利用较低维度数据最大程度的表征原始数据，从而达到降维的目的。 如何设计目标函数进行主成分的提取？ 给定一堆数据点 \((x_1, x_2, ..., x_n)\) 我们将其通过线性变换可得 $w^Tx_ i $ （此处向量均为列向量） 这个变换可以理解为是 \(x_i\) 投影在 \(w\) 向量方向得到的向">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/06/08/百面机器学习/">
+
+
+
+
+
+  <title> | A bashful dog never fattens.</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">A bashful dog never fattens.</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Simplicity is the ultimate sophistication</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/08/百面机器学习/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hk">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/hekang123456/markdownphoto/blob/master/head_portrait2.PNG?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="A bashful dog never fattens.">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-08T17:16:01+08:00">
+                2019-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="第四章-降维">第四章: 降维</h2>
+<h3 id="pca-最大方差理论">4.1 PCA 最大方差理论</h3>
+<ul>
+<li><p>如何定义主成分？ 利用空间变换， 利用较低维度数据最大程度的表征原始数据，从而达到降维的目的。</p></li>
+<li><p>如何设计目标函数进行主成分的提取？ 给定一堆数据点 <span class="math inline">\((x_1, x_2, ..., x_n)\)</span> 我们将其通过线性变换可得 $w^Tx_ i $ （此处向量均为列向量） 这个变换可以理解为是 <span class="math inline">\(x_i\)</span> 投影在 <span class="math inline">\(w\)</span> 向量方向得到的向量。 因此投影得到的向量的长度(方差)是 <span class="math inline">\(w^Tx_ix_i^Tw\)</span> , 对所有的 <span class="math inline">\(x_i\)</span> 进行变换后求和可得： <span class="math display">\[\sum_i w^Tx_ix_i^Tw=  w^T (\sum_i x_i x_i^T) w\]</span><br>
+在 <span class="math inline">\(w​\)</span> 只表征方向的情况下，我们希望这个值越大越好。因此可以得到以下优化问题： <span class="math display">\[\left\{ \begin{align}  \max &amp; w^T (\sum_i x_i x_i^T) w \\ s.t.  &amp; w^Tw=1 \end{align}\right.\]</span></p></li>
+<li>针对这个目标函数如何对PCA 问题进行求解
+<ul>
+<li>对样本数据进行<strong>中心化</strong>处理</li>
+<li>求样本的<strong>协方差矩阵</strong></li>
+<li>协方差矩阵进行<strong>特征值分解</strong>， 将特征值从大小到小排列</li>
+<li>取特征值<strong>前 <span class="math inline">\(d\)</span> 大</strong>对应的特征向量 <span class="math inline">\(w_1, w_2,..., w_d\)</span>.</li>
+<li>将 <span class="math inline">\(n\)</span> 维的样本映射到<span class="math inline">\(d\)</span> 维。</li>
+</ul></li>
+<li><p>降维后的信息占比为 <span class="math display">\[\eta = \sqrt{\frac{\sum_{i=1}^d \lambda_i^2}{\sum_{i=1}^n \lambda_i^2} }\]</span></p></li>
+</ul>
+<h3 id="pca-最小平方误差理论">4.2 PCA 最小平方误差理论</h3>
+<ul>
+<li>从回归的角度来定义 PCA 并求解
+<ul>
+<li>定义每个点 <span class="math inline">\(x_k\)</span> 到超平面 <span class="math inline">\(D\)</span> 的距离为： <span class="math display">\[\mbox{distance}(x_k, D) = \parallel x_k-\tilde{x_k} \parallel_2\]</span> 其中 <span class="math inline">\(\tilde{x_k}\)</span> 表示 <span class="math inline">\(x_k\)</span> 在超平面上的投影向量，并且假设 <span class="math inline">\(D\)</span> 是由 <span class="math inline">\(d\)</span> 个标准正交基 <span class="math inline">\(W=\{w_1, w_2, ...,w_d\}\)</span> 构成。</li>
+<li>投影向量 <span class="math inline">\(\tilde{x_k}\)</span> 用这组标准正交基线性表示： <span class="math display">\[\tilde{x_k}=\sum\limits_{i=1}^d (w_i^Tx_k)w_i\]</span></li>
+<li>PCA 的优化目标函数 <span class="math display">\[\left\{ \begin{align} \arg\min\limits_{w_1, w_2, ... w_d}  &amp; \sum\limits_{k=1}^n \parallel x_k - \tilde{x_k}  \parallel_2^2   \\ s.t &amp; w_i^T w_j = \delta_{ij} =\left\{ 1, i=j  ;0, i\neq j  \right. \end{align}\right.\]</span></li>
+<li>将 <span class="math display">\[\tilde{x_k}=\sum\limits_{i=1}^d (w_i^Tx_k)w_i\]</span> 带入上述公式得到： <span class="math display">\[
+\left\{
+\begin{align}
+    \arg\max_W &amp; tr(W^T XX^T W),\\
+    s.t. &amp; W^TW= I.
+\end{align} 
+\right.
+\]</span> 该公式和4.1中的目标相似。计算方法一样。</li>
+</ul></li>
+</ul>
+<h3 id="线性判别分析">4.3 线性判别分析</h3>
+<p>PCA 是一种无监督的降维方法，LDA 是一种有监督的降维的方法，其将标签信息考虑进去了。 - 如何设计目标函数使得降维的过程中不损失类别信息？ - 可以采用考虑线性判别分析的方法： 最大化类间距离和最小化类内距离 - 目标函数是： <span class="math display">\[J(w) = \frac{w^T(u_1-u_2)(u_1-u_2)^Tw}{\sum_{x \in c_i} w^T (x-u_i)(x-u_i)^Tw}\]</span> - 在这种目标下，如何进行求解？ - 定义类间散度矩阵 <span class="math inline">\(S_B = (u_1-u_2)(u_1-u_2)^T\)</span> , 类内散度矩阵是 <span class="math inline">\(S_w=\sum_{x \in c_i }(x-u_i) (x-u_i)^T\)</span> 。 则目标函数可以写成： <span class="math display">\[J(w) = \frac{w^T S_B w}{w^T S_w w}\]</span><br>
+- 对 <span class="math inline">\(w\)</span> 进行求偏导然后令 <span class="math inline">\(\lambda = J(w)\)</span> 可以得到： <span class="math display">\[ S_w^{-1} S_Bw = \lambda w \]</span> 所以目标就成了求解 <span class="math inline">\(S_w^{-1}S_B\)</span> 最大的特征值问题， 而投影方向就是这个特征值对应的特征向量。 - 多类别的线性判别分析怎么做？ 类间距离<span class="math inline">\(S_b = \sum\limits_{j=1}^N m_j (u_j-u)(u_j-u)^T\)</span>, 表示每个类的中心和所有样本的中心的距离。 <span class="math inline">\(S_w\)</span> 不变。<span class="math inline">\(m_j\)</span> 表示第 <span class="math inline">\(j\)</span> 个类别中的样本个数。 因此将最大化的目标是： <span class="math display">\[J(W) = \frac{tr(W^TS_bW)}{tr(W^TS_wW)} \]</span> 最后的求解目标变成了广义特征值的求解 <span class="math display">\[S_b w = \lambda S_w w\]</span></p>
+<h3 id="线性判别分析和主成分分析">4.4 线性判别分析和主成分分析</h3>
+<ul>
+<li>如何从应用的角度分析 LDA 和 PCA 的异同
+<ul>
+<li>目标： PCA 选择投影后数据方法最大的方向（无监督）， LDA 利用了标签的信息选择 类内方差最小而类间方差最大。</li>
+<li>应用
+<ul>
+<li>PCA: 语音去噪</li>
+<li>LDA: 从语音中选择是哪个人的声音</li>
+</ul></li>
+</ul></li>
+</ul>
+<h2 id="第五章非监督学习">第五章：非监督学习</h2>
+<h3 id="k-均值聚类">5.1 K 均值聚类</h3>
+<ul>
+<li>简述 K 均值聚类的具体步骤（<strong>hk: 一种EM算法</strong>）？
+<ul>
+<li>数据<strong>预处理</strong>，数据归一化， 离群点的处理</li>
+<li>随机选取 <span class="math inline">\(K\)</span> 个族<strong>中心</strong>： <span class="math inline">\(u_1^{(0)}, u_2^{(0)}, ..., u_K^{(0)}\)</span></li>
+<li>定义<strong>代价函数</strong>为： <span class="math inline">\(J(c,u) = \min\limits_u \lim\limits_c \sum\limits_{i=1}^M \parallel x_i - x_{c_l} \parallel^2\)</span></li>
+<li><p><strong>重复</strong>下面的过程直到 <span class="math inline">\(J\)</span> 收敛。</p>
+<ul>
+<li><p>对于每个样本 <span class="math inline">\(x_i\)</span> 将其分配到距离最近的族。 <span class="math display">\[
+ c_i^{(t)} \leftarrow \arg \min_k \parallel x_i - u_k^{(t)} \parallel^2;
+ \]</span></p></li>
+<li><p>对于每个类族 <span class="math inline">\(k\)</span>, 重新计算该类的族的中心 <span class="math display">\[
+  u_k^{(t+1)} \leftarrow \arg\min_u \sum \parallel x_i -u \parallel^2
+  \]</span></p></li>
+</ul></li>
+</ul></li>
+<li><span class="math inline">\(K\)</span> 均值算法的优缺点是什么？
+<ul>
+<li>缺点
+<ul>
+<li>结果受初值和和离群点的影响不稳定。</li>
+<li>结果通常不是全局最优而是局部最优</li>
+<li>无法很好的分类拒族分布差别比较大的情况（例如：一个类的样本是 另一个的100倍）</li>
+</ul></li>
+<li>优点
+<ul>
+<li>时间复杂度为 <span class="math inline">\(O(NKt)\)</span> <span class="math inline">\(N\)</span> 是数据对象的数目， <span class="math inline">\(K\)</span> 是族数， <span class="math inline">\(t\)</span> 是迭代次数。接近于线性。</li>
+</ul></li>
+</ul></li>
+<li><span class="math inline">\(K\)</span> 均值算法的调优算法？
+<ul>
+<li>数据归一化和离群点处理 均值和方差大的维度将对数据的聚类结果产生决定性的结果</li>
+<li>合理选择<span class="math inline">\(K\)</span>值
+<ul>
+<li>手肘法 （横轴为<span class="math inline">\(K\)</span>值，纵坐标为损失）</li>
+<li>Gap Statistic 方法。（蒙特卡洛模拟）</li>
+<li>采用核函数</li>
+</ul></li>
+</ul></li>
+<li>针对 <span class="math inline">\(K\)</span> 均值算法的缺点，有哪些改进的模型？
+<ul>
+<li><span class="math inline">\(K\)</span> 均值算法的主要缺点如下：
+<ul>
+<li>需要人工预先确定<strong>初始</strong> <span class="math inline">\(K\)</span> 值， 且该值和真实的数据分布未必吻合。</li>
+<li><span class="math inline">\(K\)</span> 均值只能收敛到局部最优， 效果受到<strong>初始值</strong>影响很大。</li>
+<li>易受噪点的影响。</li>
+<li>样本只能被划分到单一的类中。</li>
+</ul></li>
+<li>改进初始值对结果的影响
+<ul>
+<li>K-means++ 算法 选取的第 <span class="math inline">\(K\)</span> 个值要尽量的远离前 <span class="math inline">\(K-1\)</span> 个已经选择好了的点。</li>
+</ul></li>
+<li>改进的 <span class="math inline">\(K\)</span> 值选择方法
+<ul>
+<li>ISODATA 算法 （迭代自组织数据分析方法） 当属于某个类别的数据点过少的时候就把该类别去除（<strong>分离操作</strong>）， 当属于某个类别的样本数过多、分散程度较大的时候，把该类别分成两个子类别（<strong>合并操作</strong>）。 该方法所需的超参数：1. 预期的聚类中心数目 <span class="math inline">\(K_0\)</span>; 2. 每类所要求的最少样本数目 <span class="math inline">\(N_{\text{min}}\)</span>; 3. 最大方差 Sigma; 4. 两个聚类中心所允许的最小距离 <span class="math inline">\(D_{\text{min}}\)</span>。</li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="高斯混合模型">5.2 高斯混合模型</h3>
+<p>理论上高斯混合分布可以拟合出任意类型的分布。 - 高斯混合模型的核心思想是什么？ 假设数据可以看做是从多个高斯混合分布中生成出来的。高斯混合模型（hk:应该是做了独立同分布的假设的。）的公式为： <span class="math display">\[
+p(x) = \sum\limits_{i=1}^K \pi_i N(x|u_i, \sigma_i)
+\]</span></p>
+<ul>
+<li>高斯混合模型是如何迭代计算的？
+<ul>
+<li>EM 算法的迭代过程
+<ul>
+<li>E步骤： 根据当前的参数，计算每个点由某个分模型生成的概率。</li>
+<li>M步骤： 使用E步估计出的概率，来改进每个分模型的均值，方差和权重。</li>
+</ul></li>
+</ul></li>
+<li>高斯混合模型与 <span class="math inline">\(K\)</span> 均值算法的异同?
+<ul>
+<li>共同点： 1. 都可用于聚类算法； 2.都采用EM算法来求解；3. 都往往只能够收敛到局部最优；</li>
+<li>不同点： 1. 高斯混合分布能够给出一个样本属于某个类的概率； 2. 高斯混合分布还可以用于概率密度的估计；3. 高斯混合分布能够用于生成新的样本点。</li>
+</ul></li>
+</ul>
+<h3 id="自组织映射神经网络self-origanizing-map-som">5.3 自组织映射神经网络（self-origanizing map, SOM）</h3>
+<ul>
+<li>自组织映射神经网络是如何工作的？ SOM 本质上是一个两层的神经网络，包括输入层和输出层（竞争层）；这是一种无监督的学习算法。
+<ul>
+<li>初始化： 所有的连接权重都用小的随机值进行初始化；</li>
+<li>竞争： 计算具有最小判别函数值的特定神经元为胜利者； 每个神经元 <span class="math inline">\(j\)</span> 的判别函数为 <span class="math inline">\(d_j(x) = \sum\limits_{i=1}^D (x_i-w_{i,j})^2\)</span>。</li>
+<li>合作： 获胜的神经元 I(x) 决定了兴奋神经元拓扑邻域的空间位置，计算邻近神经元的更新程度 : <span class="math inline">\(T_{j, I(x)}(t) = \exp\left( -\frac{S^2_{j, I(x)}}{2\sigma(t)^2} \right)\)</span>, <span class="math inline">\(S_{i,j}\)</span>表示竞争层神经元<span class="math inline">\(i\)</span> 和 <span class="math inline">\(j\)</span> 之间的距离。 <span class="math inline">\(\sigma(t) = \sigma_0 \exp(-\frac{t}{\tau_\alpha})\)</span></li>
+<li>适应： 调整兴奋神经元的连接权重： <span class="math inline">\(\Delta w_{ji} = \eta (t) \cdot T_{j,I(x)}(t)\cdot(x_i - w_{ji})\)</span>, 调整学习率： <span class="math inline">\(\eta(t) = \eta_0 \exp\left( -\frac{t}{\tau_\eta} \right)\)</span></li>
+<li>迭代： 知道特征映射趋于稳定</li>
+</ul></li>
+<li>自组织映射神经网络与K均值算法有何区别？
+<ul>
+<li>K 均值算法需要事先定下类的个数，而 SOM 中聚类的结果可能小于神经元的个数。</li>
+<li>K 均值算法为每个输入数据找到相似的类之后，只更新这个类的参数，而SOM会更新附近点的参数。</li>
+<li>SOM 的可视化比较好，而且具有优雅的拓扑关系图。</li>
+</ul></li>
+<li>怎样设计自组织映射神经网络并设定网络训练参数？
+<ul>
+<li>设定输出层神经元的数量 该值和样本类别相关， 在不清楚的情况下可以设定较多的节点数。以便较好的映射样本的拓扑结构。</li>
+<li>设计输出层节点的排序 这东西需要考虑实际问题的物理意义； 例如一般的分类问题一个输出节点可以代表一个模式类，颜色空间和旅行路径问题，二维平面空间比较直观。</li>
+<li>权值的初始化 尽量使权值的初始化位置与输入样本的大概分布区域充分重合。比较简单的方法有从训练数据中随机选取 <span class="math inline">\(m\)</span> 个样本作为初始权重； 也可以随机初始化。</li>
+<li>设计拓扑领域 领域不断缩小， 各种拓扑形状都可以（正方形，圆形，六边形...）</li>
+<li>设计学习率 学习率是一个递减的函数</li>
+</ul></li>
+</ul>
+<h3 id="聚类算法的评估">5.4 聚类算法的评估</h3>
+<ul>
+<li>假设没有外部标签数据，如何评估两个聚类算法的优劣
+<ul>
+<li>常见的数据簇： 1. 中心； 2. 密度； 3. 连通； 4. 概念。</li>
+<li>聚类评估过程
+<ul>
+<li>估计聚类的趋势： 1. 聚类误差是否随类别增加而线性增加； 2. 霍普金斯统计量。</li>
+<li>判断数据簇数： 1. 手肘法； 2. Gap Statistic 方法</li>
+<li>测量聚类质量： 1. 轮廓系数； 2. 均方标准偏差； 3. R方； 4.改进的hubert统 ## 第六章: 概率图模型 ### 6.1 概率图模型的联合概率分布</li>
+</ul></li>
+</ul></li>
+<li>如何写出 6.1(a) 中贝叶斯网络的联合概率分布？（菱形带方向）</li>
+<li>如何写出 6.1(b) 中马尔可夫网络的联合概率分布？（菱形不带方向） 最大团： 由一个节点构成的子集中，任意两点之间都存在边相连，则这个子集中的所有节点构成了一个团。</li>
+</ul>
+<h3 id="概率图表示">6.2 概率图表示</h3>
+<ul>
+<li><p>解释朴素贝叶斯模型的原理。 预测指定样本属于特定类别的概率 <span class="math inline">\(P(y_i |x)\)</span> 来预测该样本的所属类别， 即： <span class="math display">\[y=\max\limits_{y_i} P(y_i |x )\]</span> <span class="math inline">\(P(y_i|x)\)</span> 可以写成： <span class="math inline">\(P(y_i|x) = \frac{P(x|y_i)P(y_i)}{P(x)}\)</span></p></li>
+<li><p>给出<strong>朴素贝叶斯模型的概率图模型</strong>？</p></li>
+<li>解释最大熵模型的原理，并给出概率图模型的表示？
+<ul>
+<li>分布 <span class="math inline">\(P(x)\)</span> 的熵定义是： <span class="math inline">\(H(P) = -\sum\limits_x P(x)\log P(x)\)</span></li>
+<li>条件熵： <span class="math inline">\(H(P)=-\sum\limits_{x,y} \tilde{P}(x) P(y|x) \log P(y|x)\)</span></li>
+<li><p>最大熵模型的学习等价于约束最优化问题： <span class="math display">\[
+\begin{align}
+\max_P H(P) &amp;= -\sum\limits_{x,y} \hat{P}(x)P(y|x)\log P(y|x), \\
+s.t., E_{\hat{p}}(f_i) &amp;= E_p (f_i), \forall i=1,2,...,M,\\
+\sum\limits_y P(y|x) &amp;= 1.
+\end{align}
+\]</span></p></li>
+<li>求解之后得到的最大熵模型的表示形式为 <span class="math display">\[
+P_w(y|x) = \frac{1}{Z} \exp(\sum\limits_{i=1}^M w_i f_i(x,y))
+\]</span></li>
+<li><p><strong>最大熵模型的概率图</strong>： （无向图模型）</p></li>
+</ul></li>
+</ul>
+<h3 id="生成式模型与判别式模型">6.3 生成式模型与判别式模型</h3>
+<ul>
+<li>常见的概率图模型中，哪些是生成式模型， 哪些是判别式模型？
+<ul>
+<li>判别式模型： 判别式模型是直接对条件概率分布 <span class="math inline">\(P(Y,Z|X)\)</span> 进行建模， 然后消掉无关变量 <span class="math inline">\(Z\)</span> 就可以得到对变量集合 <span class="math inline">\(Y\)</span> 的预测，即 <span class="math inline">\(P(Y|X) = \sum\limits_z P(Y,Z|X)\)</span></li>
+<li>生成式模型： 生成式模型对联合概率分布 <span class="math inline">\(P(X,Y,Z)\)</span> 进行建模 <span class="math inline">\(P(Y|X) = \frac{P(X,Y)}{P(X)} = \frac{\sum_z P(X,Y,Z)}{\sum_{Y,Z}P(X,Y,Z)}\)</span></li>
+<li>常见的生成式模型： <font color="red"><strong>朴素贝叶斯、贝叶斯网络、pLSA、LDA、隐马尔可夫模型</strong></font>。</li>
+<li>常见的判别式模型： 最大熵模型、条件随机场。 ### 6.4 马尔可夫模型</li>
+</ul></li>
+<li>如何对中文分词问题用隐马尔科夫模型进行建模和训练？
+<ul>
+<li>马尔科夫模型的三个问题： <font color="red"><strong>1. 概率计算问题 （前向后向算法）； 2. 预测问题（维特比算法）； 3.学习问题（Baum-Welch算法）</strong> </font></li>
+<li>问题： 将中文分词问题视为是一个序列标注问题。(隐状态是每个字的标注)</li>
+</ul></li>
+<li>最大熵马尔可夫模型为什么会产生标注偏置问题？ 如何解决？
+<ul>
+<li><p>最大熵马尔可夫模型</p>
+<ul>
+<li>隐马尔可夫模型是对隐状态序列和观测状态序列的联合概率 <span class="math inline">\(P(x,y)\)</span> 进行建模的生成式模型，而最大熵马尔可夫模型是直接对标注的后验概率 <span class="math inline">\(P(y|x)\)</span> 进行建模的判别式模型。</li>
+</ul></li>
+<li><p>最大熵模型存在的标注偏置问题（P131）</p>
+<ul>
+<li><p>问题：</p>
+<p>由于局部归一化的影响，隐状态会倾向于转移到那些后续状态可能更少的状态上，以提高整体的后验概率， 这就是标注偏置问题。</p></li>
+<li><p>解决方法</p>
+<p>条件随机场的归一化因子是在全局范围内进行归一化，枚举了整个隐状态序列 <span class="math inline">\(x_{1...n}\)</span> 的全部可能，从而解决了局部归一化带来的标注偏置问题。</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="主题模型">6.5 主题模型</h3>
+<p>将具有相同主题的词或词组映射到同一纬度上去。</p>
+<ul>
+<li><p>常见的主题模型有哪些？ 试介绍其原理。</p>
+<ul>
+<li><p>pLSA (Probabilistic Latent Semantic Analysis) <strong>生成模型</strong></p>
+<ul>
+<li><p>符号说明： <span class="math inline">\(d\)</span>: 文章； <span class="math inline">\(z\)</span>: 主题； <span class="math inline">\(w\)</span>:词</p></li>
+<li><p>给定文章生成词的概率是：</p>
+<p><span class="math inline">\(p(w|d)=\sum\limits_z p(w|z, d)p(z|d)\)</span> 假设在给定主题 <span class="math inline">\(z\)</span> 的情况下，生成词 <span class="math inline">\(w\)</span> 的概率与特定的文章无关则可得：<span class="math inline">\(p(w|d) = \sum\limits_z p(w|z)p(z|d)\)</span></p></li>
+<li><p>整个语料库中文本生成概率用似然函数表示为:</p>
+<p><span class="math display">\[L = \prod\limits_m^M \prod\limits_n^N p(d_m,w_n)^{c(d_m, w_n)}\]</span></p></li>
+<li><p>Log 似然函数可以写为：</p>
+<p><span class="math display">\[\begin{align} l&amp;=\sum\limits_{m}^M\sum\limits_n^Nc(d_m, w_m)\log p(d_m,w_n)\\ &amp;=\sum\limits_m^m \sum\limits_n^N c(d_m,w_n)\log \sum\limits_k^K p(d_m) p(z_k|d_m)p(w_n|z_k) \ \end{align}\]</span></p>
+<p>其中 <span class="math inline">\(p(w_n|z_k)\)</span> 和<span class="math inline">\(p(z_k|d_m)\)</span>是待估的参数。</p></li>
+<li><p>求解方法 : 最大期望算法。</p></li>
+</ul></li>
+<li><p>LDA</p>
+<p>LDA 采用的是贝叶斯学派的思想认为带估计的参数（主题分布和词分布）不再试一个固定的常数，而是服从一定分布的随机变量。</p>
+<p>语料库的生成过程： 对文本库中的每一篇文档 <span class="math inline">\(d_i\)</span> ，采用以下操作：</p>
+<ul>
+<li>从超参数为 <span class="math inline">\(\alpha\)</span> 的狄利克雷分布中抽样生成文档 <span class="math inline">\(d_i\)</span> 的主题分布<span class="math inline">\(\theta_i\)</span></li>
+<li>对文档 <span class="math inline">\(d_i\)</span> 中的每一个词进行以下3个操作：
+<ol type="1">
+<li>从多项式分布 <span class="math inline">\(\theta_i\)</span> 中抽样生成它所对应的主题 <span class="math inline">\(z_{ij}\)</span></li>
+<li>从超参数为 <span class="math inline">\(\beta\)</span> 为狄利克雷分布中抽样生成主题 <span class="math inline">\(z_{ij}\)</span> 对应的词分布 <span class="math inline">\(\psi_{z_{ij}}\)</span></li>
+<li>从代表词的多项式分布 <span class="math inline">\(\psi _{z_{ij}}\)</span> 中抽样生成词 <span class="math inline">\(w_{ij}\)</span></li>
+</ol></li>
+<li>求解方法：
+<ul>
+<li><strong>吉布斯采样（Gibbs Sampling）</strong></li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><p>如何确定 LDA 模型中的主题</p>
+<ul>
+<li><p>训练数据的分类： 训练集 <span class="math inline">\(60\%\)</span>, 验证集<span class="math inline">\(20\%\)</span>, 测试集<span class="math inline">\(20 \%\)</span> 。</p></li>
+<li><p>评价指标： (困惑度 perplexity)</p>
+<p><span class="math display">\[\text{perplexity}(D) = \exp \left\{  -\frac{\sum\limits_{d=1}^M \log p(w_d)}{\sum\limits_{d=1}^N N_d} \right\}\]</span></p>
+<p>其中 <span class="math inline">\(M\)</span> 是文档的总数， <span class="math inline">\(w_d\)</span> 为文档 <span class="math inline">\(d\)</span> 中单词所组成的词袋向量， $p(w_d) $ 为模型所预测的文档 <span class="math inline">\(d\)</span> 的生成概率， <span class="math inline">\(N_d\)</span> 为文档 <span class="math inline">\(d​\)</span> 中单词的总数。</p></li>
+<li><strong>第一种方法：</strong> 选择当主题数增加困惑度指标在训练集上继续下降但在验证集上反而增长的主题个数作为超参数。</li>
+<li><p><strong>第二种方法：</strong> 在 LDA 的基础上融入分层狄利克雷过程，构成一种非参数主题模型 HDP-LDA。 这种方法不需要预先指定主题的个数，模型可以随着文档的数目变化而对主题个数进行调整，缺点是会使概率图模型变得更加复杂。</p></li>
+</ul></li>
+<li><p>如何用主题模型解决推荐系统中的冷启动问题？</p>
+<ul>
+<li>目标： 优化点击率、转化率或用户体验（用户留存时间、留存率等）</li>
+<li>类别： 用户冷启动、物品冷启动、系统冷启动。</li>
+</ul></li>
+</ul>
+<h2 id="第八章-采样">第八章： 采样</h2>
+<h3 id="采样的作用">8.1 采样的作用</h3>
+<ul>
+<li>举例说明采样在机器学习中的应用
+<ul>
+<li>给定概率分布，模拟产生随机事件</li>
+<li>用少量的样本点（经验分布）来近似总体分布</li>
+<li>重采样。（处理数据不平衡问题）</li>
+<li>对复杂模型进行随机模拟，进行近似求解或推理</li>
+</ul></li>
+<li>什么是自助法和刀切法
+<ul>
+<li>自助法： 从给定训练数据集中有放回的均匀采样。</li>
+<li>刀切法：每次从样本集中删除一个或者几个样本，剩余的样本成为“刀切”样本。</li>
+</ul></li>
+</ul>
+<h3 id="均匀分布随机数">8.2 均匀分布随机数</h3>
+<ul>
+<li><p>如何编程实现均匀分布随机数生成器？</p>
+<ul>
+<li><p>线性同余法： <span class="math inline">\(x_{t+1}=(a \cdot x_t + c) \mod m\)</span></p></li>
+<li><p>伪随机数，该算法最多只能产生 <span class="math inline">\(m​\)</span> 个不同的随机数。</p></li>
+<li><p>多次产生随机数之后该方法得到的随机数序列会进入循环周期。</p></li>
+<li><p>gcc 中的 glibc 设置的 超参数值为：</p>
+<p><span class="math display">\[m=2^31-1,\\a=1103515245, \\c=12345​\]</span></p></li>
+<li><p>真正的随机数只存在于自然界的物理现象中。</p></li>
+</ul></li>
+<li><p>线性同余法中的随机种子一般如何选定？</p>
+<ul>
+<li>当前的系统时间</li>
+</ul></li>
+</ul>
+<h3 id="常见的采样方法">8.3 常见的采样方法</h3>
+<ul>
+<li><p>抛开那些针对特定分布而精心设计的采样方法，说一些你所知道的通用采样方法或采样策略，简单描述它们的主要思想以及具体操作步骤。</p>
+<ul>
+<li><p>直接用均匀采样的一些扩展方法来产生样本点： 有限离散分布可以用轮盘赌算法来采样。</p></li>
+<li><p>函数变换采样法：</p>
+<ul>
+<li><span class="math inline">\(u=\varphi(x)\)</span> , 则他们的概率密度函数有如下关系 <span class="math inline">\(p(u)|\varphi&#39;(x)|=p(x)\)</span></li>
+<li><span class="math inline">\(u\)</span> 采样简单， 能够得到复杂的分布。</li>
+</ul></li>
+<li><p>逆采样法：</p>
+<ul>
+<li><p>假设待采样的目标分布的概率密度函数为 <span class="math inline">\(p(x)\)</span>, 他的累积概率分布函数是：</p>
+<p><span class="math display">\[u=\Phi(x) = \int_{-\infty}^x p(t)d_t \]</span></p>
+<ol type="1">
+<li><p>从均匀分布 <span class="math inline">\(U(0, 1)\)</span> 产生一个随机数 <span class="math inline">\(u_i\)</span>;</p></li>
+<li><p>计算 $x_i = ^{-1} (u_i) $, 其中 <span class="math inline">\(\Phi^{-1}(\cdot)\)</span> 是累积分布函数的逆函数。</p></li>
+</ol></li>
+</ul></li>
+<li><p>拒绝采样（Rejection Sampling）</p>
+<p>对于目标分布 <span class="math inline">\(p(x)\)</span> , 选取一个容易采样的参考分布 <span class="math inline">\(q(x)\)</span> ,使得对于任意<span class="math inline">\(x\)</span> 都有 <span class="math inline">\(p(x) \leq Mq(x)\)</span> 则可以按如下过程进行采样：</p>
+<ol type="1">
+<li><p>从参考分布 <span class="math inline">\(q(x)\)</span> 中随机抽取一个样本 <span class="math inline">\(x_i\)</span> ;</p></li>
+<li><p>从均匀分布 <span class="math inline">\(U(0, 1)\)</span> 产生一个随机数 <span class="math inline">\(u_i\)</span>;</p></li>
+<li><p>如果 <span class="math inline">\(u_i &lt; \frac{p(x_i)}{ Mq(x_i)}\)</span> ，则接受样本 <span class="math inline">\(x_i\)</span>; 否则拒绝。</p></li>
+</ol></li>
+<li><p>自适应拒绝采样</p>
+<p>同拒绝采样的方法，只不过采用分段线性函数来覆盖目标分布的对数 <span class="math inline">\(\ln p(x)\)</span>。</p></li>
+<li><p>重要性采样(Importance Sampling)</p>
+<ol type="1">
+<li><p>找一个比较容易抽象的参考分布 <span class="math inline">\(q(x)\)</span> , 并令 <span class="math inline">\(w(x) = \frac{p(x)}{q(x)}\)</span> ,</p></li>
+<li><p>从参考分布 <span class="math inline">\(q(x)\)</span> 中抽取 <span class="math inline">\(N\)</span> 个样本 <span class="math inline">\(\{x_i\}\)</span> , 然后按照其重要性进行重新采样。</p></li>
+</ol></li>
+</ul></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/14/AttentionMechanism/AttentionMechanismInDeepLearning/" rel="next" title="深度学习中的注意力机制">
+                <i class="fa fa-chevron-left"></i> 深度学习中的注意力机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80MTIyNC8xNzc3Mg=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://github.com/hekang123456/markdownphoto/blob/master/head_portrait2.PNG?raw=true" alt="hk">
+            
+              <p class="site-author-name" itemprop="name">hk</p>
+              <p class="site-description motion-element" itemprop="description">hahaha</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/hekang123456" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章-降维"><span class="nav-number">1.</span> <span class="nav-text">第四章: 降维</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#pca-最大方差理论"><span class="nav-number">1.1.</span> <span class="nav-text">4.1 PCA 最大方差理论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pca-最小平方误差理论"><span class="nav-number">1.2.</span> <span class="nav-text">4.2 PCA 最小平方误差理论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性判别分析"><span class="nav-number">1.3.</span> <span class="nav-text">4.3 线性判别分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#线性判别分析和主成分分析"><span class="nav-number">1.4.</span> <span class="nav-text">4.4 线性判别分析和主成分分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章非监督学习"><span class="nav-number">2.</span> <span class="nav-text">第五章：非监督学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k-均值聚类"><span class="nav-number">2.1.</span> <span class="nav-text">5.1 K 均值聚类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高斯混合模型"><span class="nav-number">2.2.</span> <span class="nav-text">5.2 高斯混合模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自组织映射神经网络self-origanizing-map-som"><span class="nav-number">2.3.</span> <span class="nav-text">5.3 自组织映射神经网络（self-origanizing map, SOM）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚类算法的评估"><span class="nav-number">2.4.</span> <span class="nav-text">5.4 聚类算法的评估</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#概率图表示"><span class="nav-number">2.5.</span> <span class="nav-text">6.2 概率图表示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成式模型与判别式模型"><span class="nav-number">2.6.</span> <span class="nav-text">6.3 生成式模型与判别式模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主题模型"><span class="nav-number">2.7.</span> <span class="nav-text">6.5 主题模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第八章-采样"><span class="nav-number">3.</span> <span class="nav-text">第八章： 采样</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#采样的作用"><span class="nav-number">3.1.</span> <span class="nav-text">8.1 采样的作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#均匀分布随机数"><span class="nav-number">3.2.</span> <span class="nav-text">8.2 均匀分布随机数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常见的采样方法"><span class="nav-number">3.3.</span> <span class="nav-text">8.3 常见的采样方法</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hk</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v="></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v="></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v="></script>
+<script type="text/javascript" src="/js/src/post-details.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v="></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+	
+</body>
+</html>

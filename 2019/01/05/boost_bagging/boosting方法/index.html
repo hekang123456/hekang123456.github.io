@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="">
+
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="AdaBoost,GBDT,提升树,前向分布算法,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="提升方法  介绍  强可学习与弱可学习  强可学习 : 一个概念（类）,存在一个多项式的学习算法能够学习他，并且正确率很高，则这个概念是强可学习的。 弱可学习：一个概念（类）,存在一个多项式的学习算法能够学习他，但是学习的正确率只比随机猜测略好，那么这个概念就是弱可学习的。 强可学习和弱可学习是等价的， 一个概念是强可学习的充分必要条件是这个概念是弱可学习的。  提升方法的由来">
+<meta name="keywords" content="AdaBoost,GBDT,提升树,前向分布算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="提升方法">
+<meta property="og:url" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/index.html">
+<meta property="og:site_name" content="A bashful dog never fattens.">
+<meta property="og:description" content="提升方法  介绍  强可学习与弱可学习  强可学习 : 一个概念（类）,存在一个多项式的学习算法能够学习他，并且正确率很高，则这个概念是强可学习的。 弱可学习：一个概念（类）,存在一个多项式的学习算法能够学习他，但是学习的正确率只比随机猜测略好，那么这个概念就是弱可学习的。 强可学习和弱可学习是等价的， 一个概念是强可学习的充分必要条件是这个概念是弱可学习的。  提升方法的由来">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/process.png">
+<meta property="og:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/adaboost.png">
+<meta property="og:updated_time" content="2019-06-08T09:13:44.500Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="提升方法">
+<meta name="twitter:description" content="提升方法  介绍  强可学习与弱可学习  强可学习 : 一个概念（类）,存在一个多项式的学习算法能够学习他，并且正确率很高，则这个概念是强可学习的。 弱可学习：一个概念（类）,存在一个多项式的学习算法能够学习他，但是学习的正确率只比随机猜测略好，那么这个概念就是弱可学习的。 强可学习和弱可学习是等价的， 一个概念是强可学习的充分必要条件是这个概念是弱可学习的。  提升方法的由来">
+<meta name="twitter:image" content="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/boosting/process.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/">
+
+
+
+
+
+  <title>提升方法 | A bashful dog never fattens.</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">A bashful dog never fattens.</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Simplicity is the ultimate sophistication</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            Search
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="Searching..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/05/boost_bagging/boosting方法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="hk">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://github.com/hekang123456/markdownphoto/blob/master/head_portrait2.PNG?raw=true">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="A bashful dog never fattens.">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">提升方法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-05T00:00:00+08:00">
+                2019-01-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/ML/" itemprop="url" rel="index">
+                    <span itemprop="name">ML</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="提升方法">提升方法</h1>
+<p><img src="/2019/01/05/boost_bagging/boosting方法/boosting/process.png"></p>
+<h4 id="介绍">介绍</h4>
+<ul>
+<li>强可学习与弱可学习
+<ul>
+<li>强可学习 : 一个概念（类）,存在一个多项式的学习算法能够学习他，并且正确率很高，则这个概念是强可学习的。</li>
+<li>弱可学习：一个概念（类）,存在一个多项式的学习算法能够学习他，但是学习的正确率只比随机猜测略好，那么这个概念就是弱可学习的。</li>
+<li>强可学习和弱可学习是等价的， 一个概念是强可学习的充分必要条件是这个概念是弱可学习的。</li>
+</ul></li>
+<li><p>提升方法的由来</p>
+<p>在学习中， 如果发现了 &quot;弱学习算法&quot; 那么能够将它提升为 &quot;强学习算法&quot;。</p></li>
+<li>提升方法的两个问题
+<ul>
+<li>在每一轮如何改变训练数据的权重值或概率分布？</li>
+<li>如何将弱分类器合成一个强分类器？</li>
+</ul></li>
+<li><p>注： <font color="red">提升方法实际采用加法模型（即基函数的线性组合）与前向分布算法。</font> 所以对于上面的两个问题我们可以改为 （1）确定损失函数，如何求的基本分类器，也就是说输入数据变了训练得到的基本分类器也不一样了 （2）怎么确定基本分类器在合成整个分类器中基本分类器对应的权重。</p></li>
+</ul>
+<h4 id="加法模型与前向分布算法">加法模型与前向分布算法</h4>
+<ul>
+<li><p>加法模型：<br>
+<span class="math display">\[
+f(x) = \sum\limits_{m=1}^M \beta_m b(x; \gamma_m) 
+\]</span> 其中， <span class="math inline">\(b(x; \gamma_m)\)</span> 是基函数， <span class="math inline">\(\gamma_m\)</span> 是基函数的参数，<span class="math inline">\(\beta_m\)</span> 是基函数的参数。 也就是将一些基本分类器按照权值相加得到一个分类器。</p></li>
+<li><p>前向分布算法</p>
+<ul>
+<li><p>作用</p>
+<p>学习加法模型, 可以理解为是给定训练数据和损失函数的条件下，学习加法模型 <span class="math inline">\(f(x)\)</span> 成为经验风险最小化的问题。 <span class="math display">\[
+\min_{\beta_m, \gamma_m} \sum\limits_{i=1}^N L \left( y_i,  \sum\limits_{i=1}^N \beta_m b(x_i; \gamma_m) \right)
+\]</span> 这是一个复杂的问题，因此我们可以用前向分布算法从前往后，每一步只学习一个基函数与系数，逐步逼近优化目标的函数式子。</p></li>
+<li><p>步骤</p>
+<p><strong>输入:</strong> 数据集 <span class="math inline">\(T=\{ (x_1, y_1), (x_2, y_2), ..., (x_N, y_N) \}\)</span> ； 损失函数 <span class="math inline">\(L(y, f(x))\)</span>; 基函数集 <span class="math inline">\(\{ b(x; y) \}\)</span></p>
+<p><strong>输出：</strong>加法模型 <span class="math inline">\(f(x)\)</span></p>
+<ul>
+<li><p>初始化 <span class="math inline">\(f_0(x) = 0;\)</span></p></li>
+<li><p>对 <span class="math inline">\(m =1,2,3..., M\)</span></p>
+<ul>
+<li><span class="math inline">\((\beta_m, \gamma_m) = \arg \min\limits_{\beta, \gamma} \sum\limits_{i=1}^N L( y_i, f_{m-1}(x_i) + \beta b(x_i; \gamma))\)</span></li>
+<li><span class="math inline">\(f_m(x) = f_{m-1}(x) + \beta_m b(x; \gamma_m)\)</span></li>
+</ul></li>
+<li><p>得到加法模型 <span class="math display">\[
+f(x) = f_M (x) = \sum\limits_{m=1}^M \beta_m b(x; \gamma_m)
+\]</span></p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="adaboost">AdaBoost</h4>
+<p>​ AdaBoost 通过在每次训练过程中根据当前分类器对数据分类是否正确，调整训练数据的权重值。 通过当前分类器在训练数据集上的分类精度判断当前分类器的权重，最后将所有分类器进行加权求和得到最终的分类器。</p>
+<ul>
+<li><p>AdaBoost 的计算流程</p>
+<p><img src="/2019/01/05/boost_bagging/boosting方法/boosting/adaboost.png"></p>
+<ul>
+<li><p>初始数据权值： <span class="math inline">\(w_{1i} = \frac{1}{N}, i=1,2,...,N\)</span></p></li>
+<li><p>加权误差： <span class="math inline">\(e_m = \sum\limits_{i=1}^N P(G_m(x_i) \neq y_i) = \sum\limits_{i=1}^N w_{m_i} I( G_m(x_i) \neq y_i)\)</span> 其中 <span class="math inline">\(G_m (x)\)</span> 表示基本分类器，结果为-1或1。</p></li>
+<li><p>分类器权值系数： <span class="math inline">\(\alpha_m = \frac{1}{2} \log \frac{1-e_m}{e_m}\)</span></p></li>
+<li><p>数据权值分布： <span class="math display">\[
+\begin{align}
+w_{m+1, i} &amp;= \frac{w_{mi}}{z_m} \exp(-\alpha_m y_i G_m (x_i)), i=1,2,...,N \\
+Z_m &amp;= \sum\limits_{i}^N w_{mi}\exp(-\alpha_m y_i G_m(x_i))
+\end{align}
+\]</span></p></li>
+<li>当前分类器： <span class="math inline">\(f_m (x) = \sum\limits_{i=1}^M \alpha_m G_m (x)\)</span></li>
+<li><p>停止条件： 当前分类器<span class="math inline">\(f_m(x)\)</span> 的误差是否小于某个指定的值。</p></li>
+</ul></li>
+<li><p>分类器权值系数和数据权值分布的说明</p>
+<ul>
+<li><strong>权值系数:</strong> 分类误差越大，权值越小， <span class="math inline">\(\frac{1}{2}\)</span> 是一个分界点，小于 0.5 时大于0， 大于0.5时小于0。</li>
+<li><strong>数据权值分布：</strong> 如果正确分类权值为 <span class="math inline">\(\frac{w_{mi}}{ez_m}\)</span> 错误分类权值为 <span class="math inline">\(\frac{ew_{mi}}{z_m}\)</span> 。说明错误分类的数据在下一个分类器中的重要程度在不断的提升，正确分类的数据的重要程度在下降。</li>
+</ul></li>
+<li><p>优缺点</p>
+<ul>
+<li>优点：可以充分利用不同分类算法的优势进行建模，也可以将同一算法的不同设置进行组合。</li>
+<li>缺点： 只支持二分类， 多分类需要借助 one-versus-rest 思想。</li>
+</ul></li>
+<li><p>说明</p>
+<p>AdaBoost 是前向分布算法的特列，模型由基本分类器组成的加法模型， 损失函数是指数损失函数。</p></li>
+</ul>
+<h4 id="提升树">提升树</h4>
+<p>​ 提升方法采用的式加法模型（即基函数的线性组合）与前向分布算法，以<strong>决策树为<font color="red">基函数</font></strong>的提升方法。这里的决策树是只有两个节点叶节点的简单决策树，即所谓的<font color="red"><strong>决策树桩</strong></font>。</p>
+<ul>
+<li>类别
+<ul>
+<li>分类： 采用二叉分类树作为基函数，损失函数采用的是指数损失函数，可以将分类决策树视为 AdaBoost 的基本分类器为决策树的一种特殊情况。</li>
+<li>回归： 采用二叉回归树作为基函数。</li>
+</ul></li>
+<li><p>回归问题的提升树算法</p>
+<p><strong>输入：</strong> 训练数据集 <span class="math inline">\(T = \{ (x_1, y_1), (x_2, y_2), ..., (x_N, y_N)\}\)</span></p>
+<p><strong>输出:</strong> 提升树</p>
+<ul>
+<li><p>初始化 <span class="math inline">\(f_0(x) = 0\)</span></p></li>
+<li><p>对 <span class="math inline">\(m=1,2,...,M\)</span></p>
+<ul>
+<li><p>计算残差 <span class="math display">\[
+\begin{align}
+T(x; \theta) &amp;= \sum\limits_{j=1}^T c_j I(x \in R_j) \\
+r_{mi} &amp;= y_i - f_{m-1}(x_i), i=1,2,...,N
+\end{align}
+\]</span></p></li>
+<li><p>拟合残差</p>
+<p>利用回归树拟合残差 <span class="math inline">\(r_{mi}\)</span>, 得到 <span class="math inline">\(T(x; \theta_m)\)</span>。</p></li>
+<li><p>更新 : <span class="math inline">\(f_m(x) = f_{m-1}(x) + T(x; \theta_m)\)</span></p></li>
+</ul></li>
+<li><p>得到回归问题的提升树</p>
+<p><span class="math inline">\(f_M(x) = \sum\limits_{m=1}^M T(x; \theta_m)\)</span></p></li>
+</ul></li>
+</ul>
+<h4 id="梯度提升方法">梯度提升方法</h4>
+<p>​ 当采用前向分布算法求解加法模型的时候，如果损失函数是平方损失或者指数损失函数的时候，每一步的优化都很简单。分别对应于残差与AdaBoost 中对训练数据权重的调节。 但是对于一般的损失函数，每一步的优化比较困难<strong>(<font color="purple">为什么比较困难，不能用残差吗？</font>)</strong>。 因此提出了梯度提升算法。</p>
+<p>​ <strong>这种方法关键在于利用损失函数的负梯度在当前模型中的值作为回归问题梯度提升算法中的残差的近似值，拟合一个回归树。</strong></p>
+<ul>
+<li><p>梯度提升算法</p>
+<p><strong>输入:</strong> 训练数据集 <span class="math inline">\(T= \{ (x_1, y_1), (x_2, y_2),...,(x_N, y_N) \}\)</span>, 损失函数为 <span class="math inline">\(L(y, f(x))\)</span>。</p>
+<p><strong>输出:</strong> 回归树 <span class="math inline">\(\hat{f(x)}\)</span>。</p>
+<ul>
+<li><p>初始化 <span class="math display">\[
+  f_0(x) = \arg \min\limits_c \sum\limits_{i=1}^N L(y_i ,c)
+  \]</span></p></li>
+<li><p>对 <span class="math inline">\(m =1,2,...,M\)</span></p>
+<ul>
+<li><p>对 <span class="math inline">\(i=1,2,...,N\)</span> 计算 <span class="math display">\[
+r_{mi} = - \left[ \frac{\partial L(y_i, f(x_i))}{\partial f(x_i)} \right]_{f(x) = f_{m-1}(x)}
+\]</span></p></li>
+<li><p>对 <span class="math inline">\(r_{mi}\)</span> 拟合一个回归树，得到第 <span class="math inline">\(m\)</span> 棵树的叶节点区域 <span class="math inline">\(R_{mj}, j=1,2,...,J\)</span>。</p></li>
+<li><p>对 <span class="math inline">\(j=1,2,...,J\)</span>, 计算 <span class="math display">\[
+c_{mj} = \arg \min\limits_{c} \sum\limits_{x_i \in R_{mj} L(y_i, f_{m-1}(x_i)+c)}
+\]</span></p></li>
+<li><p>更新 <span class="math inline">\(f_m(x) = f_{m-1}(x) + \sum\limits_{j=1}^J c_{mj} I(x \in R_{mj})\)</span></p></li>
+</ul></li>
+<li><p>得到回归树 <span class="math display">\[
+\hat{f(x)} = f_M(x) = \sum\limits_{m=1}^M \sum\limits_{j=1}^J c_{mj} I(x \in R_{mj})
+\]</span></p></li>
+</ul></li>
+<li><p>对于平方损失函数，负梯度就是残差，对于一般的损失函数，它就是残差的近似值。</p></li>
+</ul>
+<h4 id="梯度提升树gbdt-gradient-boosting-decison-tree">梯度提升树（GBDT, Gradient Boosting Decison Tree）</h4>
+<ul>
+<li><p>介绍</p>
+<ul>
+<li>提升树 + 梯度提升</li>
+<li><p>弱学习器限定只能使用 CART 树</p></li>
+<li><p>可以用来做分类也可以用来做回归</p></li>
+</ul></li>
+<li><p>GBDT 回归算法</p>
+<p>和提升方法中的步骤是一样的， 只是限定了弱学习器（基函数）只能采用 CART 树。</p></li>
+<li><p>GBDT 分类算法</p>
+<p>因为 GBDT 做分类的时候样本输出不是连续的值，因此可以<font color="red">拟合预测的概率值: hk</font>。 可以采用指数损失函数或者对数损失函数， 当采用指数损失函数的时候退化为 AdaBoost 算法。 对于对数损失函数又有二元分类和多分类的区别。</p>
+<ul>
+<li><p>二元 GBDT 分类算法</p>
+<ul>
+<li><p>损失函数为： <span class="math inline">\(L(y, f(x)) = \log(1+exp(-yf(x)))\)</span> 其中 <span class="math inline">\(y \in \{-1, +1\}\)</span></p></li>
+<li>负梯度为：<span class="math inline">\(r_{ti} = - \frac{\partial L(y_i, f(x_i))}{ \partial f(x_i)} = \frac{y_i}{1+ \exp(y_i f(x_i))}\)</span></li>
+<li>叶节点的最佳负梯度拟合值是： <span class="math inline">\(c_{tj} = \arg\min\limits_{c} \sum\limits_{x_i \in R_{tj}} log(1+ \exp(-y_i (f_{t-1}(x_i)+c)))\)</span></li>
+<li><p>最佳负梯度的近似值是： <span class="math inline">\(c_{tj} = \frac{ \sum\limits_{x_i \in R_{tj}} r_{tj} }{ \sum\limits_{x_i \in R_{tj} } |r_{ti}| (1-|r_{ti}| ) }\)</span></p></li>
+</ul></li>
+<li><p>多元 GBDT 分类算法</p>
+<ul>
+<li>损失函数： <span class="math inline">\(L(y, f(x)) = - \sum\limits_{k=1}^K y_k \log p_k(x)\)</span></li>
+<li>预测为第 <span class="math inline">\(k\)</span> 类的表达式是： <span class="math inline">\(p_k (x) = \frac{ \exp(f_k (x)) }{ \sum\limits_{l=1}^K \exp(f_l(x)) }\)</span></li>
+<li>负梯度： $r_{til} = -<em>{f_k (x) = f</em>{l, t-1} (x)} =y_{il} - p_{l,t-1}(x_i) $</li>
+<li>最佳负梯度拟合值是： $ c_{tjl} = <em>{c</em>{jl}} <em>{i=0}^m </em>{k=1}^K L(y_k, L(y_k, f_{t-1, l}(x) + <em>{j=0}^J c</em>{jl} I(x_i R_{tjl}) )) $</li>
+<li>最佳负梯度的近似值： $ c_{tjl} =   $</li>
+</ul></li>
+<li><p>GBDT 的正则化</p>
+<ul>
+<li><p>添加正则化项（或步长） <span class="math display">\[
+f_k(x) = f_{k-1}(x) + vh_k (x)
+\]</span></p></li>
+<li><p>通过子采样（无放回），只用小部分样本去做决策树的拟合 （<strong><font color="red">具体怎么做？</font></strong>）</p></li>
+<li><p>对CART 回归树做正则化剪枝</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<h4 id="xgboost">XGBoost</h4>
+<pre><code>XGBoost 是陈天奇等人开发的一个开源机器学习项目， 高效的实现了 GBDT 算法，并进行了算法和工程上的许多改进。 </code></pre>
+<ul>
+<li><p>GBDT 算法基于经验损失函数的负梯度来构造新的决策树， 只是在决策树构造完成后再进行剪枝。 而 XGBoost 在决策树构建阶段就加入正则化项。 <span class="math display">\[
+L_t = \sum\limits_i L(y_i, F_{t-1}(x_i) + f_t(x_i)) + \Omega (f_t) \\
+\Omega (f_t) = \gamma T + \frac{1}{2} \sum\limits_{j=1}^T w_j^2
+\]</span> 其中 <span class="math inline">\(F_{t-1}(x_i)\)</span> 表示现有的 <span class="math inline">\(t-1\)</span> 棵树的最优解，<span class="math inline">\(T\)</span> 为第<span class="math inline">\(t\)</span> 棵树的叶子节点的数量。 <span class="math inline">\(w_j\)</span> 表示第 <span class="math inline">\(j\)</span> 个节点的预测值。 对该损失函数在 <span class="math inline">\(F_{t-1}\)</span> 处进行二阶泰勒展开可以推导出： <span class="math display">\[
+L_t \approx \hat{L_t} = \sum\limits_{j=1}^T \left[ G_jw_j + \frac{1}{2} (H_j + \lambda)w_j^2 \right] + \gamma T
+\]</span> 其中 $G_j = <em>{i I_j } </em>{F_{t-1}} l(y_i, F_{t-1}(x_i)) $ , <span class="math inline">\(H_j = \sum\limits_{i \in I_j } \bigtriangledown _{F_{t-1}}^2 l(y_i, F_{t-1}(x_i))\)</span></p>
+<p>通过令损失函数相对于 <span class="math inline">\(w_j\)</span> 的导数为 0可以求出在最小化损失函数的情况下各个叶子节点上的预测值。 <span class="math display">\[
+w_j ^* = -\frac{G_j}{H_j + \lambda}
+\]</span> 我们可以将预测值带入损失函数中可求得损失函数的最小值是： <span class="math display">\[
+\hat{L_t^*} = -\frac{1}{2} \sum\limits_{j=1}^T \frac{ G_j^2 }{H_j + \lambda} + \gamma T \\
+\]</span> 容易计算出分裂前后损失函数的差值为： <span class="math display">\[
+Gain = \frac{G_L^2 }{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L + G_R)^2}{H_L + H_R + \lambda} - \gamma
+\]</span> XGBoost 采用这个差值作为准则进行决策树的构造（和CART, C4.5， ID3是一样的，只是换称了这个指标）。</p></li>
+<li><p>XGBoost 和 GBDT 的区别和联系</p>
+<ul>
+<li>GBDT 是机器学习算法， XGBoost 是该算法的工程实现。</li>
+<li>在使用 CART 树作为基分类器时， XGBoost 显式的加入了正则化项，上面已经说明了，相当于从新定义了一个构造树的指标。 能够控制模型的复杂度，有利于防止过拟合，从而提高模型的泛化能力。</li>
+<li>GBDT 只使用了代价函数的一阶导数信息，XGBoost 使用了二阶导数的信息。</li>
+<li>GBDT 采用CART 作为基分类器， XGBoost 采用多种基分类器包括了 线性分类器。</li>
+<li>XGBoost 支持子采样。</li>
+<li>XGBoost 对数据的缺失值能够进行处理。</li>
+</ul></li>
+<li><p>XGBoost 的并行能力</p>
+<ul>
+<li><p>在特征排序上进行了处理，采用了 block 的结构 （<font color="red"><strong>具体怎么做的？</strong></font>）</p></li>
+<li>计算各个特征的增益是可以进行并行的。</li>
+<li><p><strong><font color="purple">近似直方图算法？</font></strong></p></li>
+</ul></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/AdaBoost/" rel="tag"># AdaBoost</a>
+          
+            <a href="/tags/GBDT/" rel="tag"># GBDT</a>
+          
+            <a href="/tags/提升树/" rel="tag"># 提升树</a>
+          
+            <a href="/tags/前向分布算法/" rel="tag"># 前向分布算法</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/26/Word2vec/Word2vecHierarchicalSoftmax/" rel="next" title="Word2vec 优化方法之 Hierarchical Softmax">
+                <i class="fa fa-chevron-left"></i> Word2vec 优化方法之 Hierarchical Softmax
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/05/主成分分析/" rel="prev" title="主成分分析方法">
+                主成分分析方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80MTIyNC8xNzc3Mg=="></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="https://github.com/hekang123456/markdownphoto/blob/master/head_portrait2.PNG?raw=true" alt="hk">
+            
+              <p class="site-author-name" itemprop="name">hk</p>
+              <p class="site-description motion-element" itemprop="description">hahaha</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/hekang123456" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-globe"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#提升方法"><span class="nav-number">1.</span> <span class="nav-text">提升方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#介绍"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加法模型与前向分布算法"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">加法模型与前向分布算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#adaboost"><span class="nav-number">1.0.0.3.</span> <span class="nav-text">AdaBoost</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#提升树"><span class="nav-number">1.0.0.4.</span> <span class="nav-text">提升树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度提升方法"><span class="nav-number">1.0.0.5.</span> <span class="nav-text">梯度提升方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度提升树gbdt-gradient-boosting-decison-tree"><span class="nav-number">1.0.0.6.</span> <span class="nav-text">梯度提升树（GBDT, Gradient Boosting Decison Tree）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xgboost"><span class="nav-number">1.0.0.7.</span> <span class="nav-text">XGBoost</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hk</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v="></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v="></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v="></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v="></script>
+<script type="text/javascript" src="/js/src/post-details.js?v="></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v="></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+	
+</body>
+</html>
