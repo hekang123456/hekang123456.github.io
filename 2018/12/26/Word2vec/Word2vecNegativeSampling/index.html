@@ -80,18 +80,18 @@
 
 
 
-<meta name="description" content="Negative Sampling 1. 为什么要采用 Negative Sampling?  符号说明： |符号|含义| |----|----| |\(n\)|词表的大小| |\(m\)|词向量的长度| |\(x_n\)| \(n\) 维的 one-hot 表示的词向量| 个人的理解： 原始的 word2vec 模型可以写成 \(\text{Softmax}(x_n \times W_{">
+<meta name="description" content="Negative Sampling 1. 为什么要采用 Negative Sampling?  符号说明： |符号|含义| |----|----| |\(n\)|词表的大小| |\(m\)|词向量的长度| |\(x_n\)| \(n\) 维的 one-hot 表示的词向量| 个人的理解： 原始的 Word2vec 模型可以写成 \(\text{Softmax}(x_n \times W_{">
 <meta name="keywords" content="Negative Sampling， Word2vec">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Word2vec 优化方法之 Negative Sampling">
 <meta property="og:url" content="http://yoursite.com/2018/12/26/Word2vec/Word2vecNegativeSampling/index.html">
 <meta property="og:site_name" content="A bashful dog never fattens.">
-<meta property="og:description" content="Negative Sampling 1. 为什么要采用 Negative Sampling?  符号说明： |符号|含义| |----|----| |\(n\)|词表的大小| |\(m\)|词向量的长度| |\(x_n\)| \(n\) 维的 one-hot 表示的词向量| 个人的理解： 原始的 word2vec 模型可以写成 \(\text{Softmax}(x_n \times W_{">
+<meta property="og:description" content="Negative Sampling 1. 为什么要采用 Negative Sampling?  符号说明： |符号|含义| |----|----| |\(n\)|词表的大小| |\(m\)|词向量的长度| |\(x_n\)| \(n\) 维的 one-hot 表示的词向量| 个人的理解： 原始的 Word2vec 模型可以写成 \(\text{Softmax}(x_n \times W_{">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-08T09:29:30.528Z">
+<meta property="og:updated_time" content="2019-06-27T05:47:11.584Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Word2vec 优化方法之 Negative Sampling">
-<meta name="twitter:description" content="Negative Sampling 1. 为什么要采用 Negative Sampling?  符号说明： |符号|含义| |----|----| |\(n\)|词表的大小| |\(m\)|词向量的长度| |\(x_n\)| \(n\) 维的 one-hot 表示的词向量| 个人的理解： 原始的 word2vec 模型可以写成 \(\text{Softmax}(x_n \times W_{">
+<meta name="twitter:description" content="Negative Sampling 1. 为什么要采用 Negative Sampling?  符号说明： |符号|含义| |----|----| |\(n\)|词表的大小| |\(m\)|词向量的长度| |\(x_n\)| \(n\) 维的 one-hot 表示的词向量| 个人的理解： 原始的 Word2vec 模型可以写成 \(\text{Softmax}(x_n \times W_{">
 
 
 
@@ -381,8 +381,74 @@
         <h1 id="negative-sampling">Negative Sampling</h1>
 <h3 id="为什么要采用-negative-sampling">1. 为什么要采用 Negative Sampling?</h3>
 <ul>
-<li>符号说明： |符号|含义| |----|----| |<span class="math inline">\(n\)</span>|词表的大小| |<span class="math inline">\(m\)</span>|词向量的长度| |<span class="math inline">\(x_n\)</span>| <span class="math inline">\(n\)</span> 维的 one-hot 表示的词向量|</li>
-<li>个人的理解： 原始的 word2vec 模型可以写成 <span class="math inline">\(\text{Softmax}(x_n \times W_{n \times m} \times W_{m \times n})\)</span>。从输入层到输出层的变换 <span class="math inline">\(x_n \times W_{n \times m}\)</span> 可以仅仅看做是一个查表的过程，因为 <span class="math inline">\(x_n\)</span> 是 one-hot 的表示所以并不费时间。 在原始的 word2vec 中从隐藏层到输出层的变化 <span class="math inline">\(\hat{x_m} \times W_{m\times n}\)</span> 需要对 <span class="math inline">\(W_{m \times n}\)</span> 中的每一个参数做运算。 同样的在</li>
+<li><p>符号说明： |符号|含义| |----|----| |<span class="math inline">\(n\)</span>|词表的大小| |<span class="math inline">\(m\)</span>|词向量的长度| |<span class="math inline">\(x_n\)</span>| <span class="math inline">\(n\)</span> 维的 one-hot 表示的词向量|</p></li>
+<li><p>个人的理解： 原始的 Word2vec 模型可以写成 <span class="math inline">\(\text{Softmax}(x_n \times W_{n \times m} \times W_{m \times n})\)</span>。从输入层到输出层的变换 <span class="math inline">\(x_n \times W_{n \times m}\)</span> 可以仅仅看做是一个查表的过程，因为 <span class="math inline">\(x_n\)</span> 是 one-hot 的表示所以并不费时间。 <font color="red">在原始的 Word2vec 中从隐藏层到输出层的变化 <span class="math inline">\(\hat{x_m} \times W_{m\times n}\)</span> 中在每一次的训练中需要对 <span class="math inline">\(W_{m \times n}\)</span> 中的每一个参数做运算(无论是在前向计算或者反馈的过程中)， 即使采用了 Hierarchical Softmax 的方法，如果遇到一个生僻的词（这个词在 huffman 树的非常深的树叶节点处）作为中心词， 那么在每次训练过程中，需要进行的二元逻辑回归次数也是非常多的。  </font> 因此有必要找一种方法，这种方法能够使得每次训练的过程中只需要对一部分的参数进行训练，从而减少计算量，加快训练过程。Negative Sampling 就是一种这样的方法。</p></li>
+</ul>
+<h3 id="negative-sampling-介绍">2. Negative Sampling 介绍</h3>
+<p>​ 负采样的方法通过随机的采取中心词的若干个负样本，然后通过对正样本和负样本的<font color="red">二元逻辑回归</font>结果取极大似然作为目标对这些二元逻辑回归中的参数进行训练。也就是说，对于同一组的训练数据。我们只对这些负样本词和真的中心词为中心词的二元逻辑回归中的参数进行了训练。</p>
+<p>​ <strong>更通俗的将，我们对每个中心词都构造了一个二元逻辑回归，这个二元逻辑回归用于判断当前输入的上下文单词是否为该中心词的上下文。 那么如果词表的大小为<span class="math inline">\(V\)</span> 那么我们需要构造 <span class="math inline">\(V\)</span> 个二元逻辑回归。 如果我们有一个中心词 <span class="math inline">\(w_0\)</span> 以及其对应的上下文单词 <span class="math inline">\(\text{context}(w)\)</span>，同时我们选取了 <span class="math inline">\(n\)</span> 个负样本为<span class="math inline">\(w_1, w_2, ...., w_n\)</span>。 那么对应的目标函数就是</strong> ： <span class="math display">\[
+L = \sum\limits_{i=0}^n y_i \log (\sigma (x_{w_0}^T \theta^{w_i} ) ) + (1-y_i)\log (1- \sigma(x_{w_0}^T \theta^{w_i}))
+\]</span> 其中的 <span class="math inline">\(x_{w_0} ^T\)</span> 表示 <span class="math inline">\(w_0\)</span> 的上下文的输入。例如在 CBOW 就是上下文词向量取算术平均之后的结果， 在 Skip-gram 中就是上下文的单个词向量。当 <span class="math inline">\(i=0\)</span> 的时候 <span class="math inline">\(y_i=1\)</span> 否则为 0。</p>
+<h3 id="负采样的方法">3. 负采样的方法</h3>
+<ul>
+<li><p>先将单位1均匀的划分为 <span class="math inline">\(M\)</span> 份。<span class="math inline">\(M&gt;&gt;V\)</span>, <span class="math inline">\(V\)</span> 表示词表的大小。</p></li>
+<li><p>计算每个单词占据整个词表的长度： <span class="math display">\[
+len(w) = \frac{\text{count}(w)^{3/4}}{\sum\limits_{u \in \text{vocab} } \text{count}(u)^{3/4}}
+\]</span></p></li>
+<li>根据计算得到的长度，将单位1中的小份分给每个单词。</li>
+<li><p>随机在单位1中生成 <span class="math inline">\(n\)</span> 个点，这些点落在哪个单词所属的区域那就选这些单词作为负样本。</p></li>
+</ul>
+<h3 id="cbow-和-skip-gram-模型的算法步骤">4. CBOW 和 Skip-gram 模型的算法步骤</h3>
+<h5 id="cbow-模型">4.1 CBOW 模型</h5>
+<p><strong>输入：</strong>基于 CBOW 的语料训练样本，词向量的维度大小 <span class="math inline">\(Mcount\)</span>，CBOW的上下文大小是<span class="math inline">\(2c\)</span>,步长<span class="math inline">\(\eta\)</span>, 负采样的个数<span class="math inline">\(neg\)</span>。</p>
+<p><strong>输出：</strong>词汇表每个词对应的模型参数<span class="math inline">\(\theta\)</span>，所有的词向量<span class="math inline">\(x_w\)</span>。</p>
+<ul>
+<li><p>1.随机初始化所有的模型参数<span class="math inline">\(\theta\)</span>，所有的词向量<span class="math inline">\(w\)</span>；</p></li>
+<li><ol start="2" type="1">
+<li>对于每个训练样本<span class="math inline">\((context(w_0),w_0)\)</span>,负采样出<span class="math inline">\(neg\)</span>个负例中心词<span class="math inline">\(w_i,i=1,2,...neg\)</span>；</li>
+</ol></li>
+<li><ol start="3" type="1">
+<li>进行梯度上升迭代过程，对于训练集中的每一个样本<span class="math inline">\((context(w_0),w_0,w_1,...w_{neg})\)</span>做如下处理:</li>
+</ol>
+<ul>
+<li><p><span class="math inline">\(e=0\)</span>, 计算 <span class="math inline">\(x_{w_0} = \frac{1}{2c} \sum\limits_{i=1}^{2c} x_i\)</span>。</p></li>
+<li><p>for i to neg, 计算: <span class="math display">\[
+f = \sigma(x_{w_0}^T \theta^{w_i}) \\
+g = (y_i -f)\eta \\
+e = e + g^{\theta^{w_i}} \\
+\theta^{w_i} = \theta^{w_i} + g x_{w_0}
+\]</span></p></li>
+<li><p>对于<span class="math inline">\(context(w)\)</span>中的每一个词向量<span class="math inline">\(x_k\)</span>(共<span class="math inline">\(2c\)</span>个)进行更新： <span class="math display">\[
+  x_k = x_k + e
+  \]</span></p></li>
+<li><p>如果梯度收敛，则结束梯度迭代，否则回到步骤3继续迭代。</p></li>
+</ul></li>
+</ul>
+<h5 id="skip-gram模型">4.2 Skip-Gram模型</h5>
+<p><strong>输入：</strong>基于 CBOW 的语料训练样本，词向量的维度大小 <span class="math inline">\(Mcount\)</span>，CBOW的上下文大小是<span class="math inline">\(2c\)</span>,步长<span class="math inline">\(\eta\)</span>, 负采样的个数<span class="math inline">\(neg\)</span>。</p>
+<p><strong>输出：</strong>词汇表每个词对应的模型参数<span class="math inline">\(\theta\)</span>，所有的词向量<span class="math inline">\(x_w\)</span>。</p>
+<ul>
+<li><p>随机初始化所有的模型参数<span class="math inline">\(θ\)</span>，所有的词向量<span class="math inline">\(w\)</span></p></li>
+<li><p>对于每个训练样本<span class="math inline">\((context(w_0),w_0)\)</span>,负采样出<span class="math inline">\(neg\)</span>个负例中心词<span class="math inline">\(w_i,i=1,2,...neg\)</span></p></li>
+<li><p>进行梯度上升迭代过程，对于训练集中的每一个样本<span class="math inline">\((context(w_0),w_0,w_1,...w_{neg})\)</span>做如下处理：</p></li>
+<li><ol type="a">
+<li>for i = 1 to 2c:</li>
+</ol>
+<ul>
+<li><p><span class="math inline">\(e\)</span> = 0;</p></li>
+<li><p>for j =0 to neg. 计算： <span class="math display">\[
+f = \sigma(x_{w_0}^T \theta^{w_j}) \\
+g = (y_j -f)\eta \\
+e = e + g^{\theta^{w_j}} \\
+\theta^{w_j} = \theta^{w_j} + g x_{w_0}
+\]</span></p></li>
+<li><p>词向量更新 <span class="math display">\[
+  x_ {w_{0i}} = x_{w_{0i}} + e
+  \]</span></p></li>
+</ul></li>
+<li><ol start="2" type="a">
+<li>如果梯度收敛，则结束梯度迭代，算法结束，否则回到步骤a继续迭代。</li>
+</ol></li>
 </ul>
 
       
@@ -414,8 +480,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/25/SVM/拉格朗日函数求解优化问题以及kkt条件/" rel="next" title="拉格朗日函数求解最优化问题,KKT条件">
-                <i class="fa fa-chevron-left"></i> 拉格朗日函数求解最优化问题,KKT条件
+              <a href="/2018/12/26/Word2vec/Word2vecHierarchicalSoftmax/" rel="next" title="Word2vec 优化方法之 Hierarchical Softmax">
+                <i class="fa fa-chevron-left"></i> Word2vec 优化方法之 Hierarchical Softmax
               </a>
             
           </div>
@@ -424,8 +490,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/26/Word2vec/Word2vecHierarchicalSoftmax/" rel="prev" title="Word2vec 优化方法之 Hierarchical Softmax">
-                Word2vec 优化方法之 Hierarchical Softmax <i class="fa fa-chevron-right"></i>
+              <a href="/2019/01/05/boost_bagging/boosting方法/" rel="prev" title="提升方法">
+                提升方法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -510,7 +576,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -532,7 +598,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -575,7 +641,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#negative-sampling"><span class="nav-number">1.</span> <span class="nav-text">Negative Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要采用-negative-sampling"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. 为什么要采用 Negative Sampling?</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#negative-sampling"><span class="nav-number">1.</span> <span class="nav-text">Negative Sampling</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么要采用-negative-sampling"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. 为什么要采用 Negative Sampling?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#negative-sampling-介绍"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. Negative Sampling 介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负采样的方法"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. 负采样的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cbow-和-skip-gram-模型的算法步骤"><span class="nav-number">1.0.4.</span> <span class="nav-text">4. CBOW 和 Skip-gram 模型的算法步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#cbow-模型"><span class="nav-number">1.0.4.0.1.</span> <span class="nav-text">4.1 CBOW 模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#skip-gram模型"><span class="nav-number">1.0.4.0.2.</span> <span class="nav-text">4.2 Skip-Gram模型</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

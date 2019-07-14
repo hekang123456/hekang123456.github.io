@@ -80,15 +80,22 @@
 
 
 
+<meta name="description" content="（一）目的 ​ 用无监督的方法（无标记的训练数据）来训练动态的词向量（词向量可以不固定，在不同的上下文中相同单词对应的词向量可以不同，因此该词向量来源于一个模型，模型的输出就是我们需要用于后续任务的词向量）。 ​ 我们需要训练一个模型，这个模型能够使得输出的每个位置的词向量具有联系上下文的能力，并且具有丰富的含义。 (二) 模型的输入输出和损失函数 输入两个句子。将每个句子对应的 toke">
 <meta name="keywords" content="BERT">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BERT">
 <meta property="og:url" content="http://yoursite.com/2019/03/14/paper/BERT/index.html">
 <meta property="og:site_name" content="A bashful dog never fattens.">
+<meta property="og:description" content="（一）目的 ​ 用无监督的方法（无标记的训练数据）来训练动态的词向量（词向量可以不固定，在不同的上下文中相同单词对应的词向量可以不同，因此该词向量来源于一个模型，模型的输出就是我们需要用于后续任务的词向量）。 ​ 我们需要训练一个模型，这个模型能够使得输出的每个位置的词向量具有联系上下文的能力，并且具有丰富的含义。 (二) 模型的输入输出和损失函数 输入两个句子。将每个句子对应的 toke">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-08T09:29:30.557Z">
+<meta property="og:image" content="http://yoursite.com/2019/03/14/paper/BERT/imge/bert0.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/03/14/paper/BERT/imge/bert1_0.jpg">
+<meta property="og:image" content="http://yoursite.com/2019/03/14/paper/BERT/imge/bert1_1.jpg">
+<meta property="og:updated_time" content="2019-06-27T05:47:11.587Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BERT">
+<meta name="twitter:description" content="（一）目的 ​ 用无监督的方法（无标记的训练数据）来训练动态的词向量（词向量可以不固定，在不同的上下文中相同单词对应的词向量可以不同，因此该词向量来源于一个模型，模型的输出就是我们需要用于后续任务的词向量）。 ​ 我们需要训练一个模型，这个模型能够使得输出的每个位置的词向量具有联系上下文的能力，并且具有丰富的含义。 (二) 模型的输入输出和损失函数 输入两个句子。将每个句子对应的 toke">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/14/paper/BERT/imge/bert0.jpg">
 
 
 
@@ -375,7 +382,63 @@
       
 
       
-        
+        <h3 id="一目的">（一）目的</h3>
+<p>​ 用无监督的方法（无标记的训练数据）来训练<strong>动态的词向量</strong>（词向量可以不固定，在不同的上下文中相同单词对应的词向量可以不同，因此该词向量来源于一个模型，模型的输出就是我们需要用于后续任务的词向量）。</p>
+<p>​ 我们需要训练一个模型，这个模型能够使得输出的每个位置的词向量具有<strong>联系上下文的能力</strong>，并且具有<strong>丰富的含义</strong>。</p>
+<h3 id="二-模型的输入输出和损失函数">(二) 模型的输入输出和损失函数</h3>
+<p>输入两个句子。将每个句子对应的 token embedding , segment embedding 和 position embedding 进行相加。</p>
+<ul>
+<li><p><strong>输入</strong>： token embedding + segment embedding + position embedding</p>
+<ul>
+<li><p><strong>token embedding</strong></p>
+<p>对每个单词进行<strong>随机初始化</strong>向量输入， 输入序列的开头加上【CLS】。如果输入是两个句子，可以在句子之间添加 【SEP】标记。正常情况下是输入一个序列，不需要加 【SEP】， 但是在训练的时候，针对QA等问题需要理解两个句子之间的关系的问题。因此在预训练中增加了一个对下一个句子的预测的任务（第三部分有讲到）。</p></li>
+<li><p><strong>segment embedding</strong></p>
+<p>第 i 个句子的 one-hot 向量表示。如果只有一个句子那就全是0了，如果有两个句子就是一个0，一个1, embedding 的维度要和 token embedding 的维度一样。</p></li>
+<li><p><strong>position embedding</strong></p>
+<p>随机初始化的位置向量，让模型自己去学，对于每个位置其位置向量是怎么样的。</p></li>
+</ul>
+<p><img src="/2019/03/14/paper/BERT/imge/bert0.jpg" width="500"></p></li>
+<li><strong>输出</strong>
+<ul>
+<li>输出长度和输入长度相同，词向量的维度可以自己定义。</li>
+<li>【CLS】 输出位置对应的向量用于表示包含有整个序列的语义表达。 所以在做分类或者第二个训练任务的时候用到的是这部分的输出。</li>
+</ul></li>
+<li><p>损失函数</p>
+<ul>
+<li><p>交叉熵损失函数。</p></li>
+<li><p>将相应位置的输出，先需要进过一个全连接层将其维度和对应词向量的 one-hot 表示维度一致，然后计算交叉熵。</p>
+<p><img src="/2019/03/14/paper/BERT/imge/bert1_0.jpg" width="400"></p>
+<p><img src="/2019/03/14/paper/BERT/imge/bert1_1.jpg" width="400"></p></li>
+</ul></li>
+</ul>
+<h3 id="三预训练的任务">（三）预训练的任务</h3>
+<ul>
+<li><p><strong>Masked LM</strong></p>
+<p><font color="red">为了使得模型训练得到的输出具有理解上下文的含义，</font>作者提出了采用 masked LM（MLM） 。 这里的 MLM 就是将随机的将句子中的一些词隐藏掉，然后根据文本的上下文对这写隐藏掉的词进行预测（可以理解为做<strong>完形填空</strong>）。</p>
+<p><font color="pink">但是如果每次在训练的时候每次都对某个单词做了 mask 那么在测试的时候可能会出现这个单词不存在的现象。因此这里的mask 采用了下面的方法： </font></p>
+<ul>
+<li><p>80%的时间真的用[MASK]取代被选中的词</p>
+<p>my dog is hairy -&gt; my dog is [MASK]</p></li>
+<li><p>10%的时间用一个随机词取代</p>
+<p>my dog is hairy -&gt; my dog is apple， 防止模型将 【mask】就记作hairy了，迫使模型去考虑上下文。</p></li>
+<li><p>10%的时间保持不变</p>
+<p>my dog is hairy -&gt; my dog is hairy, 防止 fine-tuning 的时候模型会有一些没见过的词。</p></li>
+</ul></li>
+<li><p><strong>下一句预测</strong></p>
+<p><font color="red">很多NLP的任务比如QA和NLI都需要理解两个句子之间的关系，而语言模型并不能直接反应这种关系。为了是预训练出来的模型很好的适应这些任务。</font> 就是将 【cls】 位置对应的输出用来做分类。 如果输入的两个句子是连续的上下文词那么分类标签为1，如果不是就是0。</p></li>
+</ul>
+<h3 id="四-网络结构">(四) 网络结构</h3>
+<p>​ 基本版： 12-layer, 768-hidden, 12-heads, 110M parameters。</p>
+<p>​ 扩大版：24-layer, 1024-hidden, 16-heads, 340M parameters。</p>
+<p>​</p>
+<h3 id="五已训练好的模型和代码">（五）<a href="https://github.com/google-research/bert" target="_blank" rel="noopener">已训练好的模型和代码</a></h3>
+<ul>
+<li>uncased(不区分大小写)</li>
+<li>cased(区分大小写)</li>
+<li>multilanguage (多语言)</li>
+<li>chinese(中文)</li>
+</ul>
+<p>​</p>
 
       
     </div>
@@ -406,8 +469,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/14/AttentionMechanism/注意力机制/" rel="next" title="Attention Mechanism">
-                <i class="fa fa-chevron-left"></i> Attention Mechanism
+              <a href="/2019/03/14/AttentionMechanism/AttentionMechanismInDeepLearning/" rel="next" title="深度学习中的注意力机制">
+                <i class="fa fa-chevron-left"></i> 深度学习中的注意力机制
               </a>
             
           </div>
@@ -416,8 +479,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/03/14/AttentionMechanism/AttentionMechanismInDeepLearning/" rel="prev" title="深度学习中的注意力机制">
-                深度学习中的注意力机制 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/03/14/paper/文本分类/TextCNN/" rel="prev" title="TextCNN">
+                TextCNN <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -475,8 +538,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -493,7 +565,7 @@
               
                 <a href="/archives">
               
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">21</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -515,7 +587,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
@@ -548,6 +620,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一目的"><span class="nav-number">1.</span> <span class="nav-text">（一）目的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二-模型的输入输出和损失函数"><span class="nav-number">2.</span> <span class="nav-text">(二) 模型的输入输出和损失函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三预训练的任务"><span class="nav-number">3.</span> <span class="nav-text">（三）预训练的任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四-网络结构"><span class="nav-number">4.</span> <span class="nav-text">(四) 网络结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五已训练好的模型和代码"><span class="nav-number">5.</span> <span class="nav-text">（五）已训练好的模型和代码</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
